@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -44,18 +45,40 @@ public class MainActivity extends Activity implements ServiceConnection {
 	public static TextView musicaAtual;
 	private Activity activity = this;
 	private Map<Integer, Video> mapaVideos = new HashMap<Integer, Video>();
+	
+	private void setupTab(final View view, final String tag, int id) {
+		View tabview = createTabView(tabHost.getContext(), tag);
+
+		TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview).setContent(id);
+		tabHost.addTab(setContent);
+
+	}
+
+	private static View createTabView(final Context context, final String text) {
+		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
+		TextView tv = (TextView) view.findViewById(R.id.tabsText);
+		tv.setText(text);
+		return view;
+	}
+	
+	private void setupTabHost() {
+		tabHost = (TabHost)findViewById(R.id.player_tabhost);
+		tabHost.setup();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		setupTabHost();
+		tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
+
+		setupTab(new TextView(this), "Musicas", R.id.aba_musicas);
+		setupTab(new TextView(this), "Videos", R.id.aba_videos);
 		musicaAtual = (TextView)findViewById(R.id.textView2);
 		
-		tabHost = (TabHost)findViewById(R.id.player_tabhost);
-		tabHost.setup();
-		
-		TabSpec spec1 = tabHost.newTabSpec("Musicas");
+		/*TabSpec spec1 = tabHost.newTabSpec("Musicas");
 		TabSpec spec2 = tabHost.newTabSpec("Videos");
 
 		spec1.setIndicator("Musicas");
@@ -65,7 +88,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 		spec2.setContent(R.id.aba_videos);
 
 		tabHost.addTab(spec1);
-		tabHost.addTab(spec2);
+		tabHost.addTab(spec2);*/
 
 		seekBar = (SeekBar) findViewById(R.id.music_progress);
 		this.listViewMusicas = (ListView)findViewById(R.id.lista_musicas);
