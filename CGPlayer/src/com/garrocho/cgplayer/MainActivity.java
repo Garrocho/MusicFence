@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -35,7 +36,6 @@ import com.garrocho.cgplayer.video.Video;
 public class MainActivity extends Activity implements ServiceConnection {
 
 	private TabHost tabHost;
-	private int tabAnt = -1;
 	public static SeekBar seekBar;
 	private ServiceConnection conexao;
 	private PlayerBinder binder;
@@ -43,33 +43,14 @@ public class MainActivity extends Activity implements ServiceConnection {
 	private List<Musica> listaMusicas;
 	private Context context;
 	public static TextView musicaAtual;
-	private Activity activity = this;
-	private Map<Integer, Video> mapaVideos = new HashMap<Integer, Video>();
-	
-	private void setupTab(final View view, final String tag, int id) {
-		View tabview = createTabView(tabHost.getContext(), tag);
-
-		TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview).setContent(id);
-		tabHost.addTab(setContent);
-
-	}
-
-	private static View createTabView(final Context context, final String text) {
-		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
-		TextView tv = (TextView) view.findViewById(R.id.tabsText);
-		tv.setText(text);
-		return view;
-	}
-	
-	private void setupTabHost() {
-		tabHost = (TabHost)findViewById(R.id.player_tabhost);
-		tabHost.setup();
-	}
-
+	private Map<Integer, Video> mapaVideos;
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		mapaVideos = new HashMap<Integer, Video>();
 		
 		setupTabHost();
 		tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
@@ -78,18 +59,6 @@ public class MainActivity extends Activity implements ServiceConnection {
 		setupTab(new TextView(this), "Videos", R.id.aba_videos);
 		musicaAtual = (TextView)findViewById(R.id.textView2);
 		
-		/*TabSpec spec1 = tabHost.newTabSpec("Musicas");
-		TabSpec spec2 = tabHost.newTabSpec("Videos");
-
-		spec1.setIndicator("Musicas");
-		spec2.setIndicator("Videos");
-		
-		spec1.setContent(R.id.aba_musicas);
-		spec2.setContent(R.id.aba_videos);
-
-		tabHost.addTab(spec1);
-		tabHost.addTab(spec2);*/
-
 		seekBar = (SeekBar) findViewById(R.id.music_progress);
 		this.listViewMusicas = (ListView)findViewById(R.id.lista_musicas);
 
@@ -110,7 +79,6 @@ public class MainActivity extends Activity implements ServiceConnection {
 			Intent intentPlayer = new Intent("com.garrocho.cgplayer.SERVICE_PLAYER");
 			bindService(intentPlayer, this.conexao, Context.BIND_AUTO_CREATE);
 		}
-
 
 		//video
 		context = getBaseContext();
@@ -134,7 +102,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent intent = null;
-
+				
 				intent = new Intent("com.garrocho.cgplayer.video.VIDEO_PLAYER");
 				// Launch the activity with some extras
 				intent.putExtra("layout", "0");
@@ -142,7 +110,6 @@ public class MainActivity extends Activity implements ServiceConnection {
 				startActivity(intent);
 			}
 		});
-
 	}
 
 	@Override
@@ -248,6 +215,26 @@ public class MainActivity extends Activity implements ServiceConnection {
 					mapaVideos.put(i++, video);
 				}
 		}
+	}
+
+	private void setupTab(final View view, final String tag, int id) {
+		View tabview = createTabView(tabHost.getContext(), tag);
+
+		TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview).setContent(id);
+		tabHost.addTab(setContent);
+
+	}
+
+	private static View createTabView(final Context context, final String text) {
+		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
+		TextView tv = (TextView) view.findViewById(R.id.tabsText);
+		tv.setText(text);
+		return view;
+	}
+	
+	private void setupTabHost() {
+		tabHost = (TabHost)findViewById(R.id.player_tabhost);
+		tabHost.setup();
 	}
 
 }
