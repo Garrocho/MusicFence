@@ -127,6 +127,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 
 	public void musicaModificada() {
 		listViewMusicas.clearFocus();
+
 		listViewMusicas.post(new Runnable() {
 			@Override
 			public void run() {
