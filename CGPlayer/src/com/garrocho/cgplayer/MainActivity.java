@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -189,6 +188,13 @@ public class MainActivity extends Activity implements ServiceConnection {
 
 	protected Context getContext() {
 		return context;
+	}
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		unbindService(conexao);
 	}
 
 	void getVideos() {
