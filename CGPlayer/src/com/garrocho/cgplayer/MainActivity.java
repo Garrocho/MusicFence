@@ -190,13 +190,6 @@ public class MainActivity extends Activity implements ServiceConnection {
 		return context;
 	}
 	
-	@Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-		unbindService(conexao);
-	}
-
 	void getVideos() {
 		String[] cols = new String[] {
 				MediaStore.Video.Media._ID,
