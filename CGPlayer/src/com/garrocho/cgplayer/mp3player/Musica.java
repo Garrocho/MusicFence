@@ -76,7 +76,7 @@ public class Musica implements Parcelable{
 	@Override
 	public String toString() {
 		//return String.format("%d - %s - %s - %s - %s - %d", id, artista, titulo, path, nomeArquivo, duracao);
-		return String.format("%s - %d:%d", titulo, duracao / 1000 / 60, duracao / 1000 % 60);
+		return String.format("%s", titulo);
 	}
 
 	@Override

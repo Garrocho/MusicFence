@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
@@ -43,21 +44,21 @@ public class MainActivity extends Activity implements ServiceConnection {
 	private Context context;
 	public static TextView musicaAtual;
 	private Map<Integer, Video> mapaVideos;
-		
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		mapaVideos = new HashMap<Integer, Video>();
-		
+
 		setupTabHost();
 		tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 
 		setupTab(new TextView(this), "Musicas", R.id.aba_musicas);
 		setupTab(new TextView(this), "Videos", R.id.aba_videos);
 		musicaAtual = (TextView)findViewById(R.id.textView2);
-		
+
 		seekBar = (SeekBar) findViewById(R.id.music_progress);
 		this.listViewMusicas = (ListView)findViewById(R.id.lista_musicas);
 
@@ -70,6 +71,12 @@ public class MainActivity extends Activity implements ServiceConnection {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				binder.playMusic(position);	
+
+				for (int j = 0; j < parent.getChildCount(); j++)
+					parent.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
+
+				// change the background color of the selected element
+				v.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selected));
 			}
 		});
 
@@ -101,7 +108,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent intent = null;
-				
+
 				intent = new Intent("com.garrocho.cgplayer.video.VIDEO_PLAYER");
 				// Launch the activity with some extras
 				intent.putExtra("layout", "0");
@@ -118,25 +125,46 @@ public class MainActivity extends Activity implements ServiceConnection {
 		stopService(intentPlayer);
 	}
 
+	public void musicaModificada() {
+		listViewMusicas.clearFocus();
+		listViewMusicas.post(new Runnable() {
+			@Override
+			public void run() {
+				String musicaAtual = binder.getMusicName();
+				for (int j = 0; j < listViewMusicas.getChildCount(); j++) {
+					String nomeMusica = ((TextView)listViewMusicas.getChildAt(j).findViewById(android.R.id.text1)).getText().toString();
+					if (nomeMusica.equalsIgnoreCase(musicaAtual))
+						listViewMusicas.getChildAt(j).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selected));
+					else
+						listViewMusicas.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
+				}
+			}
+		});
+	}
+
 	public void playMusic(View view) {
 		this.binder.play();
-		
+		musicaModificada();
 	}
 
 	public void pauseMusic(View view) {
 		this.binder.pause();
+		musicaModificada();
 	}
 
 	public void stopMusic(View view) {
 		this.binder.stop();
+		musicaModificada();
 	}
 
 	public void nextMusic(View view) {
 		this.binder.next();
+		musicaModificada();
 	}
 
 	public void previousMusic(View view) {
 		this.binder.previous();
+		musicaModificada();
 	}
 
 	@Override
@@ -189,7 +217,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 	protected Context getContext() {
 		return context;
 	}
-	
+
 	void getVideos() {
 		String[] cols = new String[] {
 				MediaStore.Video.Media._ID,
@@ -230,7 +258,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 		tv.setText(text);
 		return view;
 	}
-	
+
 	private void setupTabHost() {
 		tabHost = (TabHost)findViewById(R.id.player_tabhost);
 		tabHost.setup();
