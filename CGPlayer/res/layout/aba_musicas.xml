@@ -1,36 +1,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/aba_musicas"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/aba_musicas" >
+    android:layout_height="match_parent" >
 
     <ListView
-        android:layout_alignParentTop="true"
         android:id="@+id/lista_musicas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:choiceMode="singleChoice" 
-        android:listSelector="@drawable/bkg"
-        android:layout_above="@+id/layout_botoes_progresso" >
+        android:layout_above="@+id/layout_botoes_progresso"
+        android:layout_alignParentTop="true"
+        android:choiceMode="singleChoice"
+        android:listSelector="@drawable/bkg" >
     </ListView>
-    
+
     <RelativeLayout
         android:id="@+id/layout_botoes_progresso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp" >
-        
-        <SeekBar
-            android:id="@+id/music_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:clickable="true"
-            android:onClick="refreshMusic" />
-        
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp" >
+
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
@@ -38,20 +29,32 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:maxLength="33"
-            android:text="Nenhuma Musica Sendo Executada..."
-            android:textAlignment="viewStart"
-            android:textSize="7pt"
             android:layout_marginBottom="10dp"
-            android:textStyle="bold" />
+            android:layout_marginTop="30dp"
+            android:maxLength="40"
+            android:textColor="@color/red"
+            android:textSize="9pt"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textStyle="italic" />
+
+        <SeekBar
+            android:id="@+id/music_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="33dp"
+            android:clickable="true"
+            android:layout_above="@+id/textView2"
+            android:onClick="refreshMusic" />
 
         <LinearLayout
             android:id="@+id/layout_botoes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/music_progress"
+            android:layout_below="@+id/textView2"
             android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal" >
 
             <ImageButton
                 android:id="@+id/button_play"
@@ -65,40 +68,38 @@
                 android:id="@+id/button_pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@android:color/transparent"
                 android:onClick="pauseMusic"
-                android:src="@drawable/pause"
-                android:layout_marginLeft="10dp" />
+                android:src="@drawable/pause" />
 
             <ImageButton
                 android:id="@+id/button_stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@android:color/transparent"
                 android:onClick="stopMusic"
-                android:src="@drawable/stop"
-                android:layout_marginLeft="10dp" />
+                android:src="@drawable/stop" />
 
             <ImageButton
                 android:id="@+id/button_previous"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@android:color/transparent"
                 android:onClick="previousMusic"
-                android:src="@drawable/backward"
-                android:layout_marginLeft="10dp" />
+                android:src="@drawable/backward" />
 
             <ImageButton
                 android:id="@+id/button_next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@android:color/transparent"
                 android:onClick="nextMusic"
-                android:src="@drawable/forward"
-                android:layout_marginLeft="10dp" />
+                android:src="@drawable/forward" />
         </LinearLayout>
-
     </RelativeLayout>
-
 
 </RelativeLayout>
