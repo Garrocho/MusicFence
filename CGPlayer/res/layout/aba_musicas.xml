@@ -31,7 +31,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="30dp"
-            android:maxLength="40"
+            android:maxLength="30"
             android:textColor="@color/red"
             android:textSize="9pt"
             android:textAlignment="center"
