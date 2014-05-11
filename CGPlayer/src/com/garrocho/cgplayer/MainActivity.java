@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TabHost;
@@ -41,8 +42,8 @@ public class MainActivity extends Activity implements ServiceConnection {
 	private PlayerBinder binder;
 	private ListView listViewMusicas;
 	private List<Musica> listaMusicas;
-	private Context context;
 	public static TextView musicaAtual;
+	private Context context;
 	private Map<Integer, Video> mapaVideos;
 
 	@Override
@@ -55,9 +56,8 @@ public class MainActivity extends Activity implements ServiceConnection {
 		setupTabHost();
 		tabHost.getTabWidget().setDividerDrawable(R.drawable.tab_divider);
 
-		setupTab(new TextView(this), "Musicas", R.id.aba_musicas);
-		setupTab(new TextView(this), "Videos", R.id.aba_videos);
-		musicaAtual = (TextView)findViewById(R.id.textView2);
+		setupTab(new TextView(this), "Musicas", R.id.aba_musicas, R.drawable.musica);
+		setupTab(new TextView(this), "Videos", R.id.aba_videos, R.drawable.video);
 
 		seekBar = (SeekBar) findViewById(R.id.music_progress);
 		this.listViewMusicas = (ListView)findViewById(R.id.lista_musicas);
@@ -65,18 +65,12 @@ public class MainActivity extends Activity implements ServiceConnection {
 		listaMusicas = getAllMusics();
 		startService(new Intent("com.garrocho.cgplayer.SERVICE_PLAYER").putParcelableArrayListExtra("lista_musicas", (ArrayList<Musica>)listaMusicas));
 
-		ArrayAdapter<Musica> adapter = new ArrayAdapter<Musica>(this, android.R.layout.simple_list_item_1, listaMusicas);
+		ArrayAdapter<Musica> adapter = new ArrayAdapter<Musica>(this, R.layout.lista_titulo_sumario_texto, listaMusicas);
 		listViewMusicas.setAdapter(adapter);
 		listViewMusicas.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				binder.playMusic(position);	
-
-				for (int j = 0; j < parent.getChildCount(); j++)
-					parent.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
-
-				// change the background color of the selected element
-				v.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selected));
 			}
 		});
 
@@ -85,6 +79,8 @@ public class MainActivity extends Activity implements ServiceConnection {
 			Intent intentPlayer = new Intent("com.garrocho.cgplayer.SERVICE_PLAYER");
 			bindService(intentPlayer, this.conexao, Context.BIND_AUTO_CREATE);
 		}
+		
+		musicaAtual = (TextView)findViewById(R.id.textView2);
 
 		//video
 		context = getBaseContext();
@@ -103,7 +99,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 		}
 
 		// Inflate the listview with the example activities
-		homeListView.setAdapter(new HomeArrayAdapter(getContext(), android.R.layout.simple_list_item_1, list));
+		homeListView.setAdapter(new HomeArrayAdapter(getContext(), R.layout.lista_titulo_sumario_texto, list));
 		homeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -125,47 +121,24 @@ public class MainActivity extends Activity implements ServiceConnection {
 		stopService(intentPlayer);
 	}
 
-	public void musicaModificada() {
-		listViewMusicas.clearFocus();
-
-		listViewMusicas.post(new Runnable() {
-			@Override
-			public void run() {
-				String musicaAtual = binder.getMusicName();
-				for (int j = 0; j < listViewMusicas.getChildCount(); j++) {
-					String nomeMusica = ((TextView)listViewMusicas.getChildAt(j).findViewById(android.R.id.text1)).getText().toString();
-					if (nomeMusica.equalsIgnoreCase(musicaAtual))
-						listViewMusicas.getChildAt(j).setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_bg_selected));
-					else
-						listViewMusicas.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
-				}
-			}
-		});
-	}
-
 	public void playMusic(View view) {
 		this.binder.play();
-		musicaModificada();
 	}
 
 	public void pauseMusic(View view) {
 		this.binder.pause();
-		musicaModificada();
 	}
 
 	public void stopMusic(View view) {
 		this.binder.stop();
-		musicaModificada();
 	}
 
 	public void nextMusic(View view) {
 		this.binder.next();
-		musicaModificada();
 	}
 
 	public void previousMusic(View view) {
 		this.binder.previous();
-		musicaModificada();
 	}
 
 	@Override
@@ -245,17 +218,19 @@ public class MainActivity extends Activity implements ServiceConnection {
 		}
 	}
 
-	private void setupTab(final View view, final String tag, int id) {
-		View tabview = createTabView(tabHost.getContext(), tag);
+	private void setupTab(final View view, final String tag, int id, int img) {
+		View tabview = createTabView(tabHost.getContext(), tag, img);
 
 		TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview).setContent(id);
 		tabHost.addTab(setContent);
 
 	}
 
-	private static View createTabView(final Context context, final String text) {
+	private static View createTabView(final Context context, final String text, int img) {
 		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
 		TextView tv = (TextView) view.findViewById(R.id.tabsText);
+		ImageView im = (ImageView) view.findViewById(R.id.tabsImage);
+		im.setImageResource(img);
 		tv.setText(text);
 		return view;
 	}
