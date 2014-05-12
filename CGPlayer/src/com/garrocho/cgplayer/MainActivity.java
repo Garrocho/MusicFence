@@ -12,13 +12,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -104,14 +106,44 @@ public class MainActivity extends Activity implements ServiceConnection {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent intent = null;
-
+				
+				try {
+					if (binder.isPlay())
+						binder.pause();
+				} catch (Exception e) {
+				}
+				
 				intent = new Intent("com.garrocho.cgplayer.video.VIDEO_PLAYER");
 				// Launch the activity with some extras
 				intent.putExtra("layout", "0");
 				intent.putExtra(Video.class.getName(), mapaVideos.get(position));
-				startActivity(intent);
+				startActivityForResult(intent, 0);
 			}
 		});
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		try {
+			if (binder.isPaused())
+				binder.play();
+		} catch (Exception e) {
+		}
+	}
+	
+	public void addAnimation(View view) {
+		Animation fadeIn = new AlphaAnimation(0, 1);
+		fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+		fadeIn.setDuration(400);
+
+		AnimationSet animation = new AnimationSet(false); //change to false
+		animation.addAnimation(fadeIn);
+		
+		view.setAnimation(animation);
+		view.startAnimation(animation);
 	}
 
 	@Override
@@ -123,22 +155,27 @@ public class MainActivity extends Activity implements ServiceConnection {
 
 	public void playMusic(View view) {
 		this.binder.play();
+		addAnimation(view);
 	}
 
 	public void pauseMusic(View view) {
 		this.binder.pause();
+		addAnimation(view);
 	}
 
 	public void stopMusic(View view) {
 		this.binder.stop();
+		addAnimation(view);
 	}
 
 	public void nextMusic(View view) {
 		this.binder.next();
+		addAnimation(view);
 	}
 
 	public void previousMusic(View view) {
 		this.binder.previous();
+		addAnimation(view);
 	}
 
 	@Override
@@ -183,7 +220,6 @@ public class MainActivity extends Activity implements ServiceConnection {
 			while(cursor.moveToNext()){
 				Musica musica = new Musica(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getInt(5));
 				songs.add(musica);
-				Log.d("musicas", musica.toString());
 			}
 		return songs;
 	}
