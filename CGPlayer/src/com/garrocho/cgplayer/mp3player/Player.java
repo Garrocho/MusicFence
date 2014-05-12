@@ -21,7 +21,8 @@ public class Player extends Service implements OnCompletionListener {
 	private List<Musica> playlist;
 	//private String path;
 	private int musicIndex;
-	private boolean playing;
+	public boolean playing;
+	public boolean paused;
 	private boolean changeMusic;
 	
 	public Player() { }
@@ -31,6 +32,14 @@ public class Player extends Service implements OnCompletionListener {
 		@Override
 		public String getMusicName() {
 			return playlist.get(musicIndex).getTitulo();
+		}
+		
+		public boolean isPlay() {
+			return playing;
+		}
+		
+		public boolean isPaused() {
+			return paused;
 		}
 		
 		@Override
@@ -52,6 +61,7 @@ public class Player extends Service implements OnCompletionListener {
 					mediaPlayer.prepare();
 				}
 				playing = true;
+				paused = false;
 				changeMusic = false;
 				MainActivity.seekBar.setMax(mediaPlayer.getDuration());
 				MainActivity.musicaAtual.setText(playlist.get(musicIndex).getTitulo());
@@ -75,6 +85,7 @@ public class Player extends Service implements OnCompletionListener {
 		@Override
 		public void pause() {
 			mediaPlayer.pause();
+			paused = true;
 		}
 		
 		@Override
