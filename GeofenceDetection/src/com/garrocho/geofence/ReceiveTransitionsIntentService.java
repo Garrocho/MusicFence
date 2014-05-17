@@ -2,6 +2,7 @@ package com.garrocho.geofence;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,8 +16,6 @@ import android.util.Log;
 
 import com.garrocho.MainActivity;
 import com.garrocho.R;
-import com.garrocho.R.drawable;
-import com.garrocho.R.string;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
 
@@ -47,7 +46,7 @@ public class ReceiveTransitionsIntentService extends IntentService {
 
         // Give it the category for all intents sent by the Intent Service
         broadcastIntent.addCategory(GeofenceUtils.CATEGORY_LOCATION_SERVICES);
-
+        
         // First check for errors
         if (LocationClient.hasError(intent)) {
 
@@ -90,9 +89,20 @@ public class ReceiveTransitionsIntentService extends IntentService {
                 }
                 String ids = TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,geofenceIds);
                 String transitionType = getTransitionString(transition);
+                
+             // Create an Intent to broadcast to the app
+                broadcastIntent
+                        .setAction(GeofenceUtils.ACTION_GEOFENCE_TRANSITION)
+                        .addCategory(GeofenceUtils.CATEGORY_LOCATION_SERVICES)
+                        .putExtra(GeofenceUtils.EXTRA_GEOFENCE_ID, geofenceIds)
+                        .putExtra(GeofenceUtils.ACTION_GEOFENCE_TRANSITION,
+                                transitionType);
+                
+                // Broadcast the error *locally* to other components in this app
+                LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent);
 
                 sendNotification(transitionType, ids);
-
+                
                 // Log the transition type and a message
                 Log.d(GeofenceUtils.APPTAG,
                         getString(

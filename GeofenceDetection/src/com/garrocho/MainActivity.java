@@ -23,16 +23,11 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -40,34 +35,19 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.garrocho.geofence.GeofenceRemover;
 import com.garrocho.geofence.GeofenceRequester;
 import com.garrocho.geofence.GeofenceUtils;
-import com.garrocho.geofence.SimpleGeofence;
-import com.garrocho.geofence.SimpleGeofenceStore;
 import com.garrocho.geofence.GeofenceUtils.REMOVE_TYPE;
 import com.garrocho.geofence.GeofenceUtils.REQUEST_TYPE;
+import com.garrocho.geofence.SimpleGeofence;
+import com.garrocho.geofence.SimpleGeofenceStore;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity {
 	private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
@@ -106,7 +86,7 @@ public class MainActivity extends FragmentActivity {
 
 	// Store the list of geofences to remove
 	private List<String> mGeofenceIdsToRemove;
-	
+
 	public void addGeofence(View comp) {
 		Intent intent = new Intent(this, MapActivity.class);
 		startActivityForResult(intent, GeofenceUtils.LISTA_GEOFENCES_ADDED);
@@ -143,6 +123,9 @@ public class MainActivity extends FragmentActivity {
 
 		// Action for broadcast Intents that report successful addition of geofences
 		mIntentFilter.addAction(GeofenceUtils.ACTION_GEOFENCES_ADDED);
+		
+		// Action for broadcast Intents that report successful addition of geofences
+		mIntentFilter.addAction(GeofenceUtils.ACTION_GEOFENCE_TRANSITION);
 
 		// Action for broadcast Intents that report successful removal of geofences
 		mIntentFilter.addAction(GeofenceUtils.ACTION_GEOFENCES_REMOVED);
@@ -167,6 +150,21 @@ public class MainActivity extends FragmentActivity {
 
 		// Attach to the main UI
 		setContentView(R.layout.activity_main);
+
+		if (servicesConnected()) {
+
+			for (int i=1; i <mPrefs.getQtdeGeo(); i++) {
+				SimpleGeofence fence = mPrefs.getGeofence(String.valueOf(i));
+				mCurrentGeofences.add(fence.toGeofence());
+			}
+
+			try {
+				mGeofenceRequester.addGeofences(mCurrentGeofences);
+			} catch (UnsupportedOperationException e) {
+				Toast.makeText(this, R.string.add_geofences_already_requested_error,
+						Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 
 	@Override
@@ -176,23 +174,26 @@ public class MainActivity extends FragmentActivity {
 		case GeofenceUtils.LISTA_GEOFENCES_ADDED :
 		{
 			mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
-			String[] ids = intent.getStringArrayExtra(String.valueOf(GeofenceUtils.LISTA_GEOFENCES_ADDED));
-
-			if (!servicesConnected()) {
-				return;
-			}
-
-			for (int i=0; i <ids.length; i++) {
-				SimpleGeofence fence = mPrefs.getGeofence(ids[i]);
-				mCurrentGeofences.add(fence.toGeofence());
-				Log.d("ENTREI", ids[i]);
-			}
 
 			try {
-				mGeofenceRequester.addGeofences(mCurrentGeofences);
-			} catch (UnsupportedOperationException e) {
-				Toast.makeText(this, R.string.add_geofences_already_requested_error,
-						Toast.LENGTH_LONG).show();
+				ArrayList<String> ids = intent.getStringArrayListExtra(String.valueOf(GeofenceUtils.LISTA_GEOFENCES_ADDED));
+				if (!servicesConnected()) {
+					return;
+				}
+
+				for (int i=0; i <ids.size(); i++) {
+					SimpleGeofence fence = mPrefs.getGeofence(ids.get(i));
+					mCurrentGeofences.add(fence.toGeofence());
+				}
+
+				try {
+					mGeofenceRequester.addGeofences(mCurrentGeofences);
+				} catch (UnsupportedOperationException e) {
+					Toast.makeText(this, R.string.add_geofences_already_requested_error,
+							Toast.LENGTH_LONG).show();
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
 		}
 
@@ -460,6 +461,7 @@ public class MainActivity extends FragmentActivity {
 
 			// Check the action code and determine what to do
 			String action = intent.getAction();
+			Log.d("ACAO", action);
 
 			// Intent contains information about errors in adding or removing geofences
 			if (TextUtils.equals(action, GeofenceUtils.ACTION_GEOFENCE_ERROR)) {
@@ -491,8 +493,6 @@ public class MainActivity extends FragmentActivity {
 		 * @param intent The received broadcast Intent
 		 */
 		private void handleGeofenceStatus(Context context, Intent intent, String tipo) {
-			// VOCE SAIU OU ENTROU EM UMA GEOFENCE...
-			Log.d("STATUS", tipo);
 		}
 
 		/**
@@ -502,11 +502,7 @@ public class MainActivity extends FragmentActivity {
 		 * @param intent The Intent containing the transition
 		 */
 		private void handleGeofenceTransition(Context context, Intent intent) {
-			/*
-			 * If you want to change the UI when a transition occurs, put the code
-			 * here. The current design of the app uses a notification to inform the
-			 * user that a transition has occurred.
-			 */
+			 Toast.makeText(context, "TRANSITION DETECTED - I'm in handleGeofenceTransition()", Toast.LENGTH_LONG).show();
 		}
 
 		/**

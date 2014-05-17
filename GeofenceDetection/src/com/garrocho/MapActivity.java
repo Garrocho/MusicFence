@@ -66,7 +66,6 @@ public class MapActivity extends FragmentActivity {
 		int qtde = mPrefs.getQtdeGeo();
 
 		for (int i=1; i <= qtde; i++) {
-			Log.d("DESENHANDO", String.valueOf(i));
 			SimpleGeofence fence = mPrefs.getGeofence(String.valueOf(i));
 			addMarkerForFence(fence);
 		}
@@ -79,6 +78,8 @@ public class MapActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_map);
 		mPrefs = new SimpleGeofenceStore(this);
+		Intent intent = new Intent ();
+		intent.putStringArrayListExtra(String.valueOf(GeofenceUtils.LISTA_GEOFENCES_ADDED), null);
 
 		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 				.getMap();
@@ -154,7 +155,7 @@ public class MapActivity extends FragmentActivity {
 			mMap.addMarker( new MarkerOptions()
 			.position( new LatLng(fence.getLatitude(), fence.getLongitude()) )
 			.title("GeoFence " + fence.getId())
-			.snippet("Radius: " + fence.getRadius()) ).showInfoWindow();
+			.snippet("Radius: " + fence.getRadius()));
 
 			CircleOptions circleOptions = new CircleOptions()
 			.center( new LatLng(fence.getLatitude(), fence.getLongitude()) )

@@ -50,6 +50,9 @@ public final class GeofenceUtils {
 
     public static final String ACTION_GEOFENCE_TRANSITION =
             "com.example.android.geofence.ACTION_GEOFENCE_TRANSITION";
+    
+    public static final String EXTRA_GEOFENCE_ID =
+            "com.example.android.geofence.EXTRA_GEOFENCE_ID";
 
     public static final String ACTION_GEOFENCE_TRANSITION_ERROR =
                     "com.example.android.geofence.ACTION_GEOFENCE_TRANSITION_ERROR";
@@ -109,7 +112,7 @@ public final class GeofenceUtils {
     public static final double MIN_LONGITUDE = -180.d;
 
     public static final float MIN_RADIUS = 1f;
-
+    
     /*
      * Define a request code to send to Google Play services
      * This code is returned in Activity.onActivityResult
