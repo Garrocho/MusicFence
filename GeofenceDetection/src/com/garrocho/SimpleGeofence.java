@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.geofence;
+package com.garrocho;
 
 import com.google.android.gms.location.Geofence;
 

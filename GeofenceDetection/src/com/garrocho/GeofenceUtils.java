@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.geofence;
+package com.garrocho;
 
 /**
  * This class defines constants used by location sample apps.

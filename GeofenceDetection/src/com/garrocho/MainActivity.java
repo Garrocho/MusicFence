@@ -14,19 +14,25 @@
  * limitations under the License.
  */
 
-package com.example.android.geofence;
+package com.garrocho;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -34,31 +40,32 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.geofence.GeofenceUtils.REMOVE_TYPE;
-import com.example.android.geofence.GeofenceUtils.REQUEST_TYPE;
+import com.garrocho.GeofenceUtils.REMOVE_TYPE;
+import com.garrocho.GeofenceUtils.REQUEST_TYPE;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-/**
- * UI handler for the Location Services Geofence sample app.
- * Allow input of latitude, longitude, and radius for two geofences.
- * When registering geofences, check input and then send the geofences to Location Services.
- * Also allow removing either one of or both of the geofences.
- * The menu allows you to clear the screen or delete the geofences stored in persistent memory.
- */
 public class MainActivity extends FragmentActivity {
-	/*
-	 * Use to set an expiration time for a geofence. After this amount
-	 * of time Location Services will stop tracking the geofence.
-	 * Remember to unregister a geofence when you're finished with it.
-	 * Otherwise, your app will use up battery. To continue monitoring
-	 * a geofence indefinitely, set the expiration time to
-	 * Geofence#NEVER_EXPIRE.
-	 */
+	private GoogleMap mMap;
 	private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
 	private static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
 			GEOFENCE_EXPIRATION_IN_HOURS * DateUtils.HOUR_IN_MILLIS;
@@ -79,10 +86,6 @@ public class MainActivity extends FragmentActivity {
 	private GeofenceRequester mGeofenceRequester;
 	// Remove geofences handler
 	private GeofenceRemover mGeofenceRemover;
-	/*
-	 * Internal lightweight geofence objects for geofence 1 and 2
-	 */
-	private SimpleGeofence mUIGeofence1;
 
 	// decimal formats for latitude, longitude, and radius
 	private DecimalFormat mLatLngFormat;
@@ -100,7 +103,39 @@ public class MainActivity extends FragmentActivity {
 	// Store the list of geofences to remove
 	private List<String> mGeofenceIdsToRemove;
 
+	public void addMarkerForFence(SimpleGeofence fence){
+		mMap.addMarker( new MarkerOptions()
+		.position( new LatLng(fence.getLatitude(), fence.getLongitude()) )
+		.title("GeoFence " + fence.getId())
+		.snippet("Radius: " + fence.getRadius()) ).showInfoWindow();
 
+		//Instantiates a new CircleOptions object +  center/radius
+		CircleOptions circleOptions = new CircleOptions()
+		.center( new LatLng(fence.getLatitude(), fence.getLongitude()) )
+		.radius( fence.getRadius() )
+		.fillColor(0x40ff0000)
+		.strokeColor(Color.TRANSPARENT)
+		.strokeWidth(2);
+
+		Circle circle = mMap.addCircle(circleOptions);
+		
+		mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
+
+		if (!servicesConnected()) {
+			return;
+		}
+		mPrefs.setGeofence(fence.getId(), fence);
+		mCurrentGeofences.add(fence.toGeofence());
+
+		try {
+			mGeofenceRequester.addGeofences(mCurrentGeofences);
+		} catch (UnsupportedOperationException e) {
+			Toast.makeText(this, R.string.add_geofences_already_requested_error,
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -156,53 +191,75 @@ public class MainActivity extends FragmentActivity {
 		// Attach to the main UI
 		setContentView(R.layout.activity_main);
 
-		/*
-		 * Record the request as an ADD. If a connection error occurs,
-		 * the app can automatically restart the add request if Google Play services
-		 * can fix the error
-		 */
-		mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
+		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+				.getMap();
 
-		/*
-		 * Check for Google Play services. Do this after
-		 * setting the request type. If connecting to Google Play services
-		 * fails, onActivityResult is eventually called, and it needs to
-		 * know what type of request was in progress.
-		 */
-		if (!servicesConnected()) {
+		if (mMap != null) {
 
-			return;
-		}
+			mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-		/*
-		 * Create a version of geofence 1 that is "flattened" into individual fields. This
-		 * allows it to be stored in SharedPreferences.
-		 */
-		mUIGeofence1 = new SimpleGeofence(
-				"1", Double.valueOf("-20.403856"), Double.valueOf("-43.511724"), Float.valueOf("30.5"),
-				// Set the expiration time
-				GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-				// Only detect entry transitions
-				Geofence.GEOFENCE_TRANSITION_ENTER);
+			mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
 
-		// Store this flat version in SharedPreferences
-		mPrefs.setGeofence("1", mUIGeofence1);
+				@Override
+				public void onMapLongClick(final LatLng point) {
+					CameraPosition INIT =
+							new CameraPosition.Builder()
+					.target(new LatLng(point.latitude, point.longitude))
+					.zoom( 17.5F )
+					.build();
+					mMap.animateCamera( CameraUpdateFactory.newCameraPosition(INIT) );
+					
+					// TODO Auto-generated method stub
+					String names[] ={"50","100","200","500"};
+					final AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Translucent).create();
+					LayoutInflater inflater = getLayoutInflater();
+					View convertView = (View) inflater.inflate(R.layout.custom, null);
+					alertDialog.setView(convertView);
+					alertDialog.setTitle("Selecione um Radius");
+					ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+					ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,names);
+					lv.setAdapter(adapter);
+					alertDialog.show();
+					lv.setOnItemClickListener(new OnItemClickListener() {
 
-		/*
-		 * Add Geofence objects to a List. toGeofence()
-		 * creates a Location Services Geofence object from a
-		 * flat object
-		 */
-		mCurrentGeofences.add(mUIGeofence1.toGeofence());
+						@Override
+						public void onItemClick(AdapterView<?> arg0, View arg1,
+								int arg2, long arg3) {
+							String item = ((TextView)arg1).getText().toString();
+							
+							SimpleGeofence geofence = new SimpleGeofence(String.valueOf(mPrefs.getQtdeGeo()+1),
+									point.latitude, point.longitude, Float.valueOf(item),
+									GEOFENCE_EXPIRATION_IN_MILLISECONDS,
+									Geofence.GEOFENCE_TRANSITION_ENTER);
 
-		// Start the request. Fail if there's already a request in progress
-		try {
-			// Try to add geofences
-			mGeofenceRequester.addGeofences(mCurrentGeofences);
-		} catch (UnsupportedOperationException e) {
-			// Notify user that previous request hasn't finished.
-			Toast.makeText(this, R.string.add_geofences_already_requested_error,
-					Toast.LENGTH_LONG).show();
+							addMarkerForFence(geofence);
+							alertDialog.dismiss();
+						}
+					});
+				}
+			});
+			
+			// Enabling MyLocation Layer of Google Map
+			mMap.setMyLocationEnabled(true);
+
+			// Getting LocationManager object from System Service LOCATION_SERVICE
+			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+			// Creating a criteria object to retrieve provider
+			Criteria criteria = new Criteria();
+
+			// Getting the name of the best provider
+			String provider = locationManager.getBestProvider(criteria, true);
+
+			// Getting Current Location
+			Location location = locationManager.getLastKnownLocation(provider);
+
+			CameraPosition INIT =
+					new CameraPosition.Builder()
+			.target(new LatLng(location.getLatitude(), location.getLongitude()))
+			.zoom( 17.5F )
+			.build();
+			mMap.animateCamera( CameraUpdateFactory.newCameraPosition(INIT) );
 		}
 	}
 
@@ -283,31 +340,8 @@ public class MainActivity extends FragmentActivity {
 		super.onResume();
 		// Register the broadcast receiver to receive status updates
 		LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, mIntentFilter);
-		/*
-		 * Get existing geofences from the latitude, longitude, and
-		 * radius values stored in SharedPreferences. If no values
-		 * exist, null is returned.
-		 */
-		mUIGeofence1 = mPrefs.getGeofence("1");
-		/*
-		 * If the returned geofences have values, use them to set
-		 * values in the UI, using the previously-defined number
-		 * formats.
-		 */
-
-		Log.d("latitude", String.valueOf(mLatLngFormat.format(mUIGeofence1.getLatitude())));
-		Log.d("longitude", String.valueOf(mLatLngFormat.format(mUIGeofence1.getLongitude())));
-		Log.d("radius", String.valueOf(mLatLngFormat.format(mUIGeofence1.getRadius())));
 	}
 
-	/*
-	 * Save the current geofence settings in SharedPreferences.
-	 */
-	@Override
-	protected void onPause() {
-		super.onPause();
-		mPrefs.setGeofence("1", mUIGeofence1);
-	}
 
 	/**
 	 * Verify that Google Play services is available before making a request.

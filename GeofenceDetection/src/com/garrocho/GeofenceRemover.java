@@ -1,12 +1,7 @@
-package com.example.android.geofence;
+package com.garrocho;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationStatusCodes;
-import com.google.android.gms.location.LocationClient.OnRemoveGeofencesResultListener;
+import java.util.Arrays;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -17,8 +12,14 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import java.util.Arrays;
-import java.util.List;
+import com.garrocho.R;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationClient.OnRemoveGeofencesResultListener;
+import com.google.android.gms.location.LocationStatusCodes;
 
 /**
  * Class for connecting to Location Services and removing geofences.

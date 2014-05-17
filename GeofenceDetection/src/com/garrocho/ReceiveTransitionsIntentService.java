@@ -1,7 +1,6 @@
-package com.example.android.geofence;
+package com.garrocho;
 
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.LocationClient;
+import java.util.List;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -14,7 +13,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.util.List;
+import com.garrocho.R;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.LocationClient;
 
 /**
  * This class receives geofence transition events from Location Services, in the

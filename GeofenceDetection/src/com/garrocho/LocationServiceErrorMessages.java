@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.android.geofence;
+package com.garrocho;
 
-import com.google.android.gms.common.ConnectionResult;
 import android.content.Context;
 import android.content.res.Resources;
+
+import com.garrocho.R;
+import com.google.android.gms.common.ConnectionResult;
 
 /**
  * Map error codes to error messages.
