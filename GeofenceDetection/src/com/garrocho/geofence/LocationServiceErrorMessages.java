@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.garrocho;
+package com.garrocho.geofence;
 
 import android.content.Context;
 import android.content.res.Resources;
 
 import com.garrocho.R;
+import com.garrocho.R.string;
 import com.google.android.gms.common.ConnectionResult;
 
 /**

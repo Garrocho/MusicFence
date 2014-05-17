@@ -49,8 +49,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.garrocho.GeofenceUtils.REMOVE_TYPE;
-import com.garrocho.GeofenceUtils.REQUEST_TYPE;
+import com.garrocho.geofence.GeofenceRemover;
+import com.garrocho.geofence.GeofenceRequester;
+import com.garrocho.geofence.GeofenceUtils;
+import com.garrocho.geofence.SimpleGeofence;
+import com.garrocho.geofence.SimpleGeofenceStore;
+import com.garrocho.geofence.GeofenceUtils.REMOVE_TYPE;
+import com.garrocho.geofence.GeofenceUtils.REQUEST_TYPE;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.Geofence;
@@ -65,7 +70,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity {
-	private GoogleMap mMap;
 	private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
 	private static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
 			GEOFENCE_EXPIRATION_IN_HOURS * DateUtils.HOUR_IN_MILLIS;
@@ -102,37 +106,10 @@ public class MainActivity extends FragmentActivity {
 
 	// Store the list of geofences to remove
 	private List<String> mGeofenceIdsToRemove;
-
-	public void addMarkerForFence(SimpleGeofence fence){
-		mMap.addMarker( new MarkerOptions()
-		.position( new LatLng(fence.getLatitude(), fence.getLongitude()) )
-		.title("GeoFence " + fence.getId())
-		.snippet("Radius: " + fence.getRadius()) ).showInfoWindow();
-
-		//Instantiates a new CircleOptions object +  center/radius
-		CircleOptions circleOptions = new CircleOptions()
-		.center( new LatLng(fence.getLatitude(), fence.getLongitude()) )
-		.radius( fence.getRadius() )
-		.fillColor(0x40ff0000)
-		.strokeColor(Color.TRANSPARENT)
-		.strokeWidth(2);
-
-		Circle circle = mMap.addCircle(circleOptions);
-		
-		mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
-
-		if (!servicesConnected()) {
-			return;
-		}
-		mPrefs.setGeofence(fence.getId(), fence);
-		mCurrentGeofences.add(fence.toGeofence());
-
-		try {
-			mGeofenceRequester.addGeofences(mCurrentGeofences);
-		} catch (UnsupportedOperationException e) {
-			Toast.makeText(this, R.string.add_geofences_already_requested_error,
-					Toast.LENGTH_LONG).show();
-		}
+	
+	public void addGeofence(View comp) {
+		Intent intent = new Intent(this, MapActivity.class);
+		startActivityForResult(intent, GeofenceUtils.LISTA_GEOFENCES_ADDED);
 	}
 
 	@SuppressLint("NewApi")
@@ -190,91 +167,34 @@ public class MainActivity extends FragmentActivity {
 
 		// Attach to the main UI
 		setContentView(R.layout.activity_main);
-
-		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-				.getMap();
-
-		if (mMap != null) {
-
-			mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-
-			mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
-
-				@Override
-				public void onMapLongClick(final LatLng point) {
-					CameraPosition INIT =
-							new CameraPosition.Builder()
-					.target(new LatLng(point.latitude, point.longitude))
-					.zoom( 17.5F )
-					.build();
-					mMap.animateCamera( CameraUpdateFactory.newCameraPosition(INIT) );
-					
-					// TODO Auto-generated method stub
-					String names[] ={"50","100","200","500"};
-					final AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this, android.R.style.Theme_Translucent).create();
-					LayoutInflater inflater = getLayoutInflater();
-					View convertView = (View) inflater.inflate(R.layout.custom, null);
-					alertDialog.setView(convertView);
-					alertDialog.setTitle("Selecione um Radius");
-					ListView lv = (ListView) convertView.findViewById(R.id.listView1);
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,names);
-					lv.setAdapter(adapter);
-					alertDialog.show();
-					lv.setOnItemClickListener(new OnItemClickListener() {
-
-						@Override
-						public void onItemClick(AdapterView<?> arg0, View arg1,
-								int arg2, long arg3) {
-							String item = ((TextView)arg1).getText().toString();
-							
-							SimpleGeofence geofence = new SimpleGeofence(String.valueOf(mPrefs.getQtdeGeo()+1),
-									point.latitude, point.longitude, Float.valueOf(item),
-									GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-									Geofence.GEOFENCE_TRANSITION_ENTER);
-
-							addMarkerForFence(geofence);
-							alertDialog.dismiss();
-						}
-					});
-				}
-			});
-			
-			// Enabling MyLocation Layer of Google Map
-			mMap.setMyLocationEnabled(true);
-
-			// Getting LocationManager object from System Service LOCATION_SERVICE
-			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-			// Creating a criteria object to retrieve provider
-			Criteria criteria = new Criteria();
-
-			// Getting the name of the best provider
-			String provider = locationManager.getBestProvider(criteria, true);
-
-			// Getting Current Location
-			Location location = locationManager.getLastKnownLocation(provider);
-
-			CameraPosition INIT =
-					new CameraPosition.Builder()
-			.target(new LatLng(location.getLatitude(), location.getLongitude()))
-			.zoom( 17.5F )
-			.build();
-			mMap.animateCamera( CameraUpdateFactory.newCameraPosition(INIT) );
-		}
 	}
 
-	/*
-	 * Handle results returned to this Activity by other Activities started with
-	 * startActivityForResult(). In particular, the method onConnectionFailed() in
-	 * GeofenceRemover and GeofenceRequester may call startResolutionForResult() to
-	 * start an Activity that handles Google Play services problems. The result of this
-	 * call returns here, to onActivityResult.
-	 * calls
-	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// Choose what to do based on the request code
 		switch (requestCode) {
+		case GeofenceUtils.LISTA_GEOFENCES_ADDED :
+		{
+			mRequestType = GeofenceUtils.REQUEST_TYPE.ADD;
+			String[] ids = intent.getStringArrayExtra(String.valueOf(GeofenceUtils.LISTA_GEOFENCES_ADDED));
+
+			if (!servicesConnected()) {
+				return;
+			}
+
+			for (int i=0; i <ids.length; i++) {
+				SimpleGeofence fence = mPrefs.getGeofence(ids[i]);
+				mCurrentGeofences.add(fence.toGeofence());
+				Log.d("ENTREI", ids[i]);
+			}
+
+			try {
+				mGeofenceRequester.addGeofences(mCurrentGeofences);
+			} catch (UnsupportedOperationException e) {
+				Toast.makeText(this, R.string.add_geofences_already_requested_error,
+						Toast.LENGTH_LONG).show();
+			}
+		}
 
 		// If the request code matches the code sent in onConnectionFailed
 		case GeofenceUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST :

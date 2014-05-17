@@ -1,4 +1,4 @@
-package com.garrocho;
+package com.garrocho.geofence;
 
 import java.util.List;
 
@@ -13,7 +13,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.garrocho.MainActivity;
 import com.garrocho.R;
+import com.garrocho.R.drawable;
+import com.garrocho.R.string;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationClient;
 

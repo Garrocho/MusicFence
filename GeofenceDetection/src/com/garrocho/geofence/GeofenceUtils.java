@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.garrocho;
+package com.garrocho.geofence;
 
 /**
  * This class defines constants used by location sample apps.
@@ -115,6 +115,7 @@ public final class GeofenceUtils {
      * This code is returned in Activity.onActivityResult
      */
     public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    public final static int LISTA_GEOFENCES_ADDED = 8723;
 
     // A string of length 0, used to clear out input fields
     public static final String EMPTY_STRING = new String();

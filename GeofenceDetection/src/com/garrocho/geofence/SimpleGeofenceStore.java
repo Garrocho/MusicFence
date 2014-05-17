@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.garrocho;
+package com.garrocho.geofence;
+
+import com.garrocho.MainActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;

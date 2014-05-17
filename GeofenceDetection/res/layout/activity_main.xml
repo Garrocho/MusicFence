@@ -4,20 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <fragment
-        android:id="@+id/map"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.MapFragment" >
-    </fragment>
-
-    <TextView
-        android:id="@+id/textView1"
+    <Button
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="@string/rotulo_clique"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_centerHorizontal="true"
+        android:onClick="addGeofence"
+        android:text="Add GeoFence" />
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.garrocho;
+package com.garrocho.geofence;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.garrocho.R;
+import com.garrocho.R.string;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
