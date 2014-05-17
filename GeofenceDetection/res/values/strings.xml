@@ -30,6 +30,7 @@
     <string name="menu_item_clear_all_geofences">Clear all geofences</string>
     <string name="menu_item_clear_geofence_history">Clear stored geofences</string>
     <string name="radius">Radius</string>
+    <string name="rotulo_clique">Pressione Em Um Local do Mapa!</string>
 
     <!-- Messages -->
     <string name="add_geofences_result_success">
