@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.garrocho;
 
 import java.text.DecimalFormat;
@@ -38,7 +22,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -65,6 +48,11 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 import com.garrocho.cgplayer.mp3player.Musica;
 import com.garrocho.cgplayer.mp3player.Player.PlayerBinder;
 import com.garrocho.cgplayer.video.HomeArrayAdapter;
@@ -303,6 +291,30 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 				alertDialog.dismiss();
 			}
 		}, 9000);
+		
+		 // start Facebook Login
+	    Session.openActiveSession(this, true, new Session.StatusCallback() {
+
+	      // callback quando a session muda de state
+	      @Override
+	      public void call(Session session, SessionState state, Exception exception){
+	        if (session.isOpened()) {
+
+	          // faz pedido na /me API
+	          Request.executeMeRequestAsync(session, new Request.GraphUserCallback(){
+
+	            // callback depois que a Graph API responde com um user object
+	            @Override
+	            public void onCompleted(GraphUser user, Response response) {
+	              if (user != null) {
+	                TextView welcome = (TextView) findViewById(R.id.welcome);
+	                welcome.setText("Hello " + user.getName() + "!");
+	              }
+	            }
+	          });
+	        }
+	      }
+	    });
 	}
 
 	public void addAnimation(View view) {
@@ -450,6 +462,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		// Choose what to do based on the request code
+
 		try {
 			if (binder.isPaused())
 				binder.play();
