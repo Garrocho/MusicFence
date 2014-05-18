@@ -48,11 +48,17 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.android.Facebook;
+import com.facebook.model.GraphPlace;
 import com.facebook.model.GraphUser;
+import com.facebook.widget.FacebookDialog;
 import com.garrocho.cgplayer.mp3player.Musica;
 import com.garrocho.cgplayer.mp3player.Player.PlayerBinder;
 import com.garrocho.cgplayer.video.HomeArrayAdapter;
@@ -106,6 +112,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 	// decimal formats for latitude, longitude, and radius
 	private DecimalFormat mLatLngFormat;
 	private DecimalFormat mRadiusFormat;
+	private static final String PERMISSION = "publish_actions";
 
 	/*
 	 * An instance of an inner class that receives broadcasts from listeners and from the
@@ -113,11 +120,96 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 	 */
 	private GeofenceSampleReceiver mBroadcastReceiver;
 
+	private Session secao;
+
 	// An intent filter for the broadcast receiver
 	private IntentFilter mIntentFilter;
 
 	// Store the list of geofences to remove
 	private List<String> mGeofenceIdsToRemove;
+
+	private Facebook mFacebook;
+	private final String PENDING_ACTION_BUNDLE_KEY = "com.facebook.samples.hellofacebook:PendingAction";
+
+	private void performPublish(PendingAction action, boolean allowNoSession) {
+		Session session = Session.getActiveSession();
+		if (session != null) {
+			pendingAction = action;
+			if (hasPublishPermission()) {
+				// We can do the action right away.
+				handlePendingAction();
+				return;
+			} else if (session.isOpened()) {
+				// We need to get new permissions, then complete the action when we get called back.
+				session.requestNewPublishPermissions(new Session.NewPermissionsRequest(this, PERMISSION));
+				return;
+			}
+		}
+
+		if (allowNoSession) {
+			pendingAction = action;
+			handlePendingAction();
+		}
+	}
+
+	@SuppressWarnings("incomplete-switch")
+	private void handlePendingAction() {
+		PendingAction previouslyPendingAction = pendingAction;
+		// These actions may re-set pendingAction if they are still pending, but we assume they
+		// will succeed.
+		pendingAction = PendingAction.NONE;
+
+		switch (previouslyPendingAction) {
+		case POST_STATUS_UPDATE:
+			postStatusUpdate();
+			break;
+		}
+	}
+
+	private boolean canPresentShareDialog;
+	private UiLifecycleHelper uiHelper;
+	private GraphUser user;
+	private GraphPlace place;
+	private List<GraphUser> tags;
+
+	private FacebookDialog.ShareDialogBuilder createShareDialogBuilderForLink() {
+		return new FacebookDialog.ShareDialogBuilder(this)
+		.setName("Ouvindo uma Musica pelo CGPlayerFence!")
+		.setDescription("Ouvi a musica " + binder.getMusicName())
+		.setLink("http://maps.googleapis.com/maps/api/staticmap?center=-20.396757,-43.509326&zoom=15&size=200x200&sensor=false");
+	}
+
+	private void postStatusUpdate() {
+		if (canPresentShareDialog) {
+			FacebookDialog shareDialog = createShareDialogBuilderForLink().build();
+			uiHelper.trackPendingDialogCall(shareDialog.present());
+		} else if (user != null && hasPublishPermission()) {
+			final String message = "Teste Man";
+			Request request = Request
+					.newStatusUpdateRequest(Session.getActiveSession(), message, place, tags, new Request.Callback() {
+						@Override
+						public void onCompleted(Response response) {
+							//showPublishResult(message, response.getGraphObject(), response.getError());
+							Log.d("OK", "POSTADO OK");
+						}
+					});
+			request.executeAsync();
+		} else {
+			pendingAction = PendingAction.POST_STATUS_UPDATE;
+		}
+	}
+	private boolean hasPublishPermission() {
+		Session session = Session.getActiveSession();
+		return session != null && session.getPermissions().contains("publish_actions");
+	}
+
+	private PendingAction pendingAction = PendingAction.NONE;
+
+	private enum PendingAction {
+		NONE,
+		POST_PHOTO,
+		POST_STATUS_UPDATE
+	}
 
 	@SuppressLint("NewApi")
 	@Override
@@ -213,6 +305,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		listViewMusicas.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				postStatusUpdate();
 				binder.playMusic(position);	
 			}
 		});
@@ -283,7 +376,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		myMsg.setTextSize(18);
 		alertDialog.setView(myMsg);
 		alertDialog.show();
-		
+
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
@@ -291,31 +384,65 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 				alertDialog.dismiss();
 			}
 		}, 9000);
-		
-		 // start Facebook Login
-	    Session.openActiveSession(this, true, new Session.StatusCallback() {
 
-	      // callback quando a session muda de state
-	      @Override
-	      public void call(Session session, SessionState state, Exception exception){
-	        if (session.isOpened()) {
+		// start Facebook Login
+		this.secao = Session.openActiveSession(this, true, new Session.StatusCallback() {
 
-	          // faz pedido na /me API
-	          Request.executeMeRequestAsync(session, new Request.GraphUserCallback(){
+			// callback quando a session muda de state
+			@Override
+			public void call(Session session, SessionState state, Exception exception){
+				if (session.isOpened()) {
 
-	            // callback depois que a Graph API responde com um user object
-	            @Override
-	            public void onCompleted(GraphUser user, Response response) {
-	              if (user != null) {
-	                TextView welcome = (TextView) findViewById(R.id.welcome);
-	                welcome.setText("Hello " + user.getName() + "!");
-	              }
-	            }
-	          });
-	        }
-	      }
-	    });
+					// faz pedido na /me API
+					Request.executeMeRequestAsync(session, new Request.GraphUserCallback(){
+
+						// callback depois que a Graph API responde com um user object
+						@Override
+						public void onCompleted(GraphUser user, Response response) {
+							if (user != null) {
+								TextView welcome = (TextView) findViewById(R.id.welcome);
+								welcome.setText("Hello " + user.getName() + "!");
+							}
+						}
+					});
+				}
+			}
+		});
+
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);
+
+		if (savedInstanceState != null) {
+			String name = savedInstanceState.getString(PENDING_ACTION_BUNDLE_KEY);
+			pendingAction = PendingAction.valueOf(name);
+		}
+		handlePendingAction();
+		// Can we present the share dialog for regular links?
+		canPresentShareDialog = FacebookDialog.canPresentShareDialog(this,
+				FacebookDialog.ShareDialogFeature.SHARE_DIALOG);
 	}
+
+	private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+		if (pendingAction != PendingAction.NONE &&
+				(exception instanceof FacebookOperationCanceledException ||
+						exception instanceof FacebookAuthorizationException)) {
+			new AlertDialog.Builder(MainActivity.this)
+			.setTitle("Cancelado")
+			.setMessage("Sem Permissao")
+			.setPositiveButton("OK", null)
+			.show();
+			pendingAction = PendingAction.NONE;
+		} else if (state == SessionState.OPENED_TOKEN_UPDATED) {
+			handlePendingAction();
+		}
+	}
+
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state, Exception exception) {
+			onSessionStateChange(session, state, exception);
+		}
+	};
 
 	public void addAnimation(View view) {
 		Animation fadeIn = new AlphaAnimation(0, 1);
