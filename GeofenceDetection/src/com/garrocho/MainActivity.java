@@ -89,6 +89,7 @@ public class MainActivity extends FragmentActivity {
 
 	public void addGeofence(View comp) {
 		Intent intent = new Intent(this, MapActivity.class);
+		intent.putExtra("MUSICA", "Charles Garrocho");
 		startActivityForResult(intent, GeofenceUtils.LISTA_GEOFENCES_ADDED);
 	}
 
@@ -152,8 +153,8 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 
 		if (servicesConnected()) {
-
-			for (int i=1; i <mPrefs.getQtdeGeo(); i++) {
+			
+			for (int i=1; i <= mPrefs.getQtdeGeo(); i++) {
 				SimpleGeofence fence = mPrefs.getGeofence(String.valueOf(i));
 				mCurrentGeofences.add(fence.toGeofence());
 			}
@@ -298,11 +299,6 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * Called when the user clicks the "Remove geofences" button
-	 *
-	 * @param view The view that triggered this callback
-	 */
 	public void onUnregisterByPendingIntentClicked(View view) {
 		/*
 		 * Remove all geofences set by this app. To do this, get the
@@ -461,7 +457,6 @@ public class MainActivity extends FragmentActivity {
 
 			// Check the action code and determine what to do
 			String action = intent.getAction();
-			Log.d("ACAO", action);
 
 			// Intent contains information about errors in adding or removing geofences
 			if (TextUtils.equals(action, GeofenceUtils.ACTION_GEOFENCE_ERROR)) {
@@ -470,10 +465,10 @@ public class MainActivity extends FragmentActivity {
 
 				// Intent contains information about successful addition or removal of geofences
 			} else if (TextUtils.equals(action, GeofenceUtils.ACTION_GEOFENCES_ADDED)) {
-				handleGeofenceStatus(context, intent, "ENTROU");
+				handleGeofenceStatus(context, intent);
 			}
 			else if (TextUtils.equals(action, GeofenceUtils.ACTION_GEOFENCES_REMOVED)) {
-				handleGeofenceStatus(context, intent, "SAIU");
+				handleGeofenceStatus(context, intent);
 				// Intent contains information about a geofence transition
 			} else if (TextUtils.equals(action, GeofenceUtils.ACTION_GEOFENCE_TRANSITION)) {
 
@@ -492,7 +487,7 @@ public class MainActivity extends FragmentActivity {
 		 * @param context A Context for this component
 		 * @param intent The received broadcast Intent
 		 */
-		private void handleGeofenceStatus(Context context, Intent intent, String tipo) {
+		private void handleGeofenceStatus(Context context, Intent intent) {
 		}
 
 		/**
@@ -502,7 +497,18 @@ public class MainActivity extends FragmentActivity {
 		 * @param intent The Intent containing the transition
 		 */
 		private void handleGeofenceTransition(Context context, Intent intent) {
-			 Toast.makeText(context, "TRANSITION DETECTED - I'm in handleGeofenceTransition()", Toast.LENGTH_LONG).show();
+			String[] ids = intent.getStringArrayExtra(GeofenceUtils.EXTRA_GEOFENCE_ID);
+			String tipo = intent.getStringExtra(GeofenceUtils.ACTION_GEOFENCE_TRANSITION);
+			
+			for (int i=0; i < ids.length; i++)
+				Log.d("ID", ids[i]);
+			if (getString(R.string.geofence_transition_entered).equalsIgnoreCase(tipo)) {
+				Toast.makeText(context, mPrefs.getGeofence(ids[0]).getMusica(), Toast.LENGTH_LONG).show();
+			}
+			else {
+				Toast.makeText(context, "SAIU", Toast.LENGTH_LONG).show();
+			}
+			 
 		}
 
 		/**

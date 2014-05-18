@@ -157,8 +157,8 @@ public class GeofenceRequester
         // Get a PendingIntent that Location Services issues when a geofence transition occurs
         mGeofencePendingIntent = createRequestPendingIntent();
 
-        // Send a request to add the current geofences
-        mLocationClient.addGeofences(mCurrentGeofences, mGeofencePendingIntent, this);
+        if (mCurrentGeofences.size() > 0)
+        	mLocationClient.addGeofences(mCurrentGeofences, mGeofencePendingIntent, this);
     }
 
     /*
@@ -276,6 +276,8 @@ public class GeofenceRequester
 
         // If no PendingIntent exists
         } else {
+        	
+        	Log.d("ENTREEI", "EENISDAFJI");
 
             // Create an Intent pointing to the IntentService
             Intent intent = new Intent(mActivity, ReceiveTransitionsIntentService.class);

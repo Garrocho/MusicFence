@@ -17,7 +17,6 @@
 package com.garrocho;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -30,7 +29,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -54,6 +52,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends FragmentActivity {
+	private String musica;
 	private GoogleMap mMap;
 	private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
 	private static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
@@ -77,6 +76,17 @@ public class MapActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_map);
+		if (savedInstanceState == null) {
+		    Bundle extras = getIntent().getExtras();
+		    if(extras == null) {
+		        musica= null;
+		    } else {
+		        musica= extras.getString("MUSICA");
+		    }
+		} else {
+		    musica = (String) savedInstanceState.getSerializable("MUSICA");
+		}
+		
 		mPrefs = new SimpleGeofenceStore(this);
 		Intent intent = new Intent ();
 		intent.putStringArrayListExtra(String.valueOf(GeofenceUtils.LISTA_GEOFENCES_ADDED), null);
@@ -120,7 +130,7 @@ public class MapActivity extends FragmentActivity {
 							SimpleGeofence geofence = new SimpleGeofence(String.valueOf(mPrefs.getQtdeGeo()+1),
 									point.latitude, point.longitude, Float.valueOf(item),
 									GEOFENCE_EXPIRATION_IN_MILLISECONDS,
-									Geofence.GEOFENCE_TRANSITION_ENTER);
+									Geofence.GEOFENCE_TRANSITION_ENTER, musica);
 
 							addMarkerForFence(geofence);
 							mPrefs.setGeofence(geofence.getId(), geofence);

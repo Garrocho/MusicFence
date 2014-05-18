@@ -93,6 +93,9 @@ public class SimpleGeofenceStore {
 		int transitionType = mPrefs.getInt(
 				getGeofenceFieldKey(id, GeofenceUtils.KEY_TRANSITION_TYPE),
 				GeofenceUtils.INVALID_INT_VALUE);
+		
+		String musica = mPrefs.getString(
+				getGeofenceFieldKey(id, GeofenceUtils.KEY_MUSICA), "NADA");
 
 		// If none of the values is incorrect, return the object
 		if (
@@ -103,7 +106,7 @@ public class SimpleGeofenceStore {
 				transitionType != GeofenceUtils.INVALID_INT_VALUE) {
 
 			// Return a true Geofence object
-			return new SimpleGeofence(id, lat, lng, radius, expirationDuration, transitionType);
+			return new SimpleGeofence(id, lat, lng, radius, expirationDuration, transitionType, musica);
 
 			// Otherwise, return null.
 		} else {
@@ -146,6 +149,10 @@ public class SimpleGeofenceStore {
 		editor.putInt(
 				getGeofenceFieldKey(id, GeofenceUtils.KEY_TRANSITION_TYPE),
 				geofence.getTransitionType());
+		
+		editor.putString(
+				getGeofenceFieldKey(id, GeofenceUtils.KEY_MUSICA),
+				geofence.getMusica());
 		editor.putInt("CGGEOFENCEIDS", mPrefs.getInt("CGGEOFENCEIDS", 0) + 1);
 		editor.commit();
 	}
@@ -163,6 +170,7 @@ public class SimpleGeofenceStore {
 		editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_RADIUS));
 		editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_EXPIRATION_DURATION));
 		editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_TRANSITION_TYPE));
+		editor.remove(getGeofenceFieldKey(id, GeofenceUtils.KEY_MUSICA));
 		editor.commit();
 	}
 

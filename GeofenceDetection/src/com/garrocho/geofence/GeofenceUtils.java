@@ -88,6 +88,9 @@ public final class GeofenceUtils {
 
     public static final String KEY_TRANSITION_TYPE =
             "com.example.android.geofence.KEY_TRANSITION_TYPE";
+    
+    public static final String KEY_MUSICA =
+            "com.example.android.geofence.KEY_MUSICA";
 
     // The prefix for flattened geofence keys
     public static final String KEY_PREFIX =

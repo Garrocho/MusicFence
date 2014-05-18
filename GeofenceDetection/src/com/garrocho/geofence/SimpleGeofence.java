@@ -29,6 +29,7 @@ public class SimpleGeofence {
     private final float mRadius;
     private long mExpirationDuration;
     private int mTransitionType;
+    private String musica;
 
     /**
      * @param geofenceId The Geofence's request ID
@@ -45,7 +46,8 @@ public class SimpleGeofence {
             double longitude,
             float radius,
             long expiration,
-            int transition) {
+            int transition,
+            String musica) {
         // Set the instance fields from the constructor
 
         // An identifier for the geofence
@@ -57,6 +59,8 @@ public class SimpleGeofence {
 
         // Radius of the geofence, in meters
         this.mRadius = radius;
+        
+        this.musica = musica;
 
         // Expiration time in milliseconds
         this.mExpirationDuration = expiration;
@@ -132,4 +136,12 @@ public class SimpleGeofence {
                        .setExpirationDuration(mExpirationDuration)
                        .build();
     }
+
+	public String getMusica() {
+		return musica;
+	}
+
+	public void setMusica(String musica) {
+		this.musica = musica;
+	}
 }
