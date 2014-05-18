@@ -110,7 +110,7 @@ public class MapActivity extends FragmentActivity {
 					mMap.animateCamera( CameraUpdateFactory.newCameraPosition(INIT) );
 
 					// TODO Auto-generated method stub
-					String names[] ={"50","100","200","500"};
+					String names[] ={"25", "50", "100", "200", "400"};
 					final AlertDialog alertDialog = new AlertDialog.Builder(MapActivity.this, android.R.style.Theme_Translucent).create();
 					LayoutInflater inflater = getLayoutInflater();
 					View convertView = (View) inflater.inflate(R.layout.custom, null);

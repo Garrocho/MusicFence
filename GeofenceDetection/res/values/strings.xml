@@ -18,7 +18,7 @@
 <resources>
 
     <!-- app name and title -->
-    <string name="app_name">Geofence Detection</string>
+    <string name="app_name">CGPlayerFence</string>
     <string name="title_activity_geofence">Geofence Entry</string>
 
     <!-- UI -->
@@ -36,7 +36,7 @@
     <!-- Messages -->
     <string name="add_geofences_result_success">        Add Geofences: Success GeofenceRequestIds=%1$s</string>
     <string name="add_geofences_result_failure">        Add Geofences: Failure, error code %1$d GeofenceRequestIds=%2$s</string>
-    <string name="add_geofences_already_requested_error">        Can\'t add geofences, previous request hasn\'t finished.</string>
+    <string name="add_geofences_already_requested_error">Geofence Adicionada!</string>
     <string name="connected">Client connected</string>
     <string name="connection_failed">Connection failed</string>
     <string name="disconnected">Client disconnected</string>

@@ -18,6 +18,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/rotulo_clique"
+        android:textStyle="bold"
+        android:textColor="@color/red"
+        
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

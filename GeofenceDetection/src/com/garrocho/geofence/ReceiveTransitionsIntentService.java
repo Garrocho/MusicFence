@@ -101,8 +101,6 @@ public class ReceiveTransitionsIntentService extends IntentService {
                 // Broadcast the error *locally* to other components in this app
                 LocalBroadcastManager.getInstance(this).sendBroadcast(broadcastIntent);
 
-                sendNotification(transitionType, ids);
-                
                 // Log the transition type and a message
                 Log.d(GeofenceUtils.APPTAG,
                         getString(

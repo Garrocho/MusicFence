@@ -103,7 +103,8 @@ public class SimpleGeofenceStore {
 				lng != GeofenceUtils.INVALID_FLOAT_VALUE &&
 				radius != GeofenceUtils.INVALID_FLOAT_VALUE &&
 				expirationDuration != GeofenceUtils.INVALID_LONG_VALUE &&
-				transitionType != GeofenceUtils.INVALID_INT_VALUE) {
+				transitionType != GeofenceUtils.INVALID_INT_VALUE &&
+				musica != "NADA") {
 
 			// Return a true Geofence object
 			return new SimpleGeofence(id, lat, lng, radius, expirationDuration, transitionType, musica);
