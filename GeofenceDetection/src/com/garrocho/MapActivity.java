@@ -27,6 +27,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -139,6 +140,14 @@ public class MapActivity extends FragmentActivity {
 							intent.putStringArrayListExtra(String.valueOf(GeofenceUtils.LISTA_GEOFENCES_ADDED), lista);
 							MapActivity.this.setResult(Activity.RESULT_OK, intent);
 							alertDialog.dismiss();
+							
+							new Handler().postDelayed(new Runnable() {
+
+								@Override
+								public void run() {
+									MapActivity.this.onBackPressed();
+								}
+							}, 2000);
 						}
 					});
 				}

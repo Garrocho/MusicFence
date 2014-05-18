@@ -25,6 +25,7 @@ import java.util.Map;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -35,7 +36,9 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -43,6 +46,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -282,6 +286,23 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 				startActivityForResult(intent, 0);
 			}
 		});
+
+		final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+		TextView myMsg = new TextView(this);
+		alertDialog.setTitle("Instrucoes");
+		myMsg.setText("Pressione Em Uma Musica Para Adicionar Uma GeoFence!");
+		myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+		myMsg.setTextSize(18);
+		alertDialog.setView(myMsg);
+		alertDialog.show();
+		
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				alertDialog.dismiss();
+			}
+		}, 9000);
 	}
 
 	public void addAnimation(View view) {
