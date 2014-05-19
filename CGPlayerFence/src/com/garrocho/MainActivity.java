@@ -55,7 +55,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.android.Facebook;
 import com.facebook.model.GraphPlace;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.FacebookDialog;
@@ -128,43 +127,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 	// Store the list of geofences to remove
 	private List<String> mGeofenceIdsToRemove;
 
-	private Facebook mFacebook;
 	private final String PENDING_ACTION_BUNDLE_KEY = "com.facebook.samples.hellofacebook:PendingAction";
-
-	private void performPublish(PendingAction action, boolean allowNoSession) {
-		Session session = Session.getActiveSession();
-		if (session != null) {
-			pendingAction = action;
-			if (hasPublishPermission()) {
-				// We can do the action right away.
-				handlePendingAction();
-				return;
-			} else if (session.isOpened()) {
-				// We need to get new permissions, then complete the action when we get called back.
-				session.requestNewPublishPermissions(new Session.NewPermissionsRequest(this, PERMISSION));
-				return;
-			}
-		}
-
-		if (allowNoSession) {
-			pendingAction = action;
-			handlePendingAction();
-		}
-	}
-
-	@SuppressWarnings("incomplete-switch")
-	private void handlePendingAction() {
-		PendingAction previouslyPendingAction = pendingAction;
-		// These actions may re-set pendingAction if they are still pending, but we assume they
-		// will succeed.
-		pendingAction = PendingAction.NONE;
-
-		switch (previouslyPendingAction) {
-		case POST_STATUS_UPDATE:
-			postStatusUpdate();
-			break;
-		}
-	}
 
 	private boolean canPresentShareDialog;
 	private UiLifecycleHelper uiHelper;
@@ -172,16 +135,16 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 	private GraphPlace place;
 	private List<GraphUser> tags;
 
-	private FacebookDialog.ShareDialogBuilder createShareDialogBuilderForLink() {
+	private FacebookDialog.ShareDialogBuilder createShareDialogBuilderForLink(double lat, double log) {
 		return new FacebookDialog.ShareDialogBuilder(this)
 		.setName("Ouvindo uma Musica pelo CGPlayerFence!")
-		.setDescription("Ouvi a musica " + binder.getMusicName())
-		.setLink("http://maps.googleapis.com/maps/api/staticmap?center=-20.396757,-43.509326&zoom=15&size=200x200&sensor=false");
+		.setDescription(binder.getMusicName())
+		.setLink("http://maps.googleapis.com/maps/api/staticmap?center=" + String.valueOf(lat) + "," + String.valueOf(log) + "&zoom=15&size=200x200&sensor=false");
 	}
 
-	private void postStatusUpdate() {
+	private void postStatusUpdate(SimpleGeofence geo) {
 		if (canPresentShareDialog) {
-			FacebookDialog shareDialog = createShareDialogBuilderForLink().build();
+			FacebookDialog shareDialog = createShareDialogBuilderForLink(geo.getLatitude(), geo.getLongitude()).build();
 			uiHelper.trackPendingDialogCall(shareDialog.present());
 		} else if (user != null && hasPublishPermission()) {
 			final String message = "Teste Man";
@@ -189,8 +152,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 					.newStatusUpdateRequest(Session.getActiveSession(), message, place, tags, new Request.Callback() {
 						@Override
 						public void onCompleted(Response response) {
-							//showPublishResult(message, response.getGraphObject(), response.getError());
-							Log.d("OK", "POSTADO OK");
+							Toast.makeText(MainActivity.this, "Sucesso Ao Publicar!",Toast.LENGTH_LONG).show();
 						}
 					});
 			request.executeAsync();
@@ -305,7 +267,6 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		listViewMusicas.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				postStatusUpdate();
 				binder.playMusic(position);	
 			}
 		});
@@ -386,7 +347,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		}, 9000);
 
 		// start Facebook Login
-		this.secao = Session.openActiveSession(this, true, new Session.StatusCallback() {
+		/*this.secao = Session.openActiveSession(this, true, new Session.StatusCallback() {
 
 			// callback quando a session muda de state
 			@Override
@@ -407,7 +368,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 					});
 				}
 			}
-		});
+		});*/
 
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
@@ -416,7 +377,6 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 			String name = savedInstanceState.getString(PENDING_ACTION_BUNDLE_KEY);
 			pendingAction = PendingAction.valueOf(name);
 		}
-		handlePendingAction();
 		// Can we present the share dialog for regular links?
 		canPresentShareDialog = FacebookDialog.canPresentShareDialog(this,
 				FacebookDialog.ShareDialogFeature.SHARE_DIALOG);
@@ -433,7 +393,6 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 			.show();
 			pendingAction = PendingAction.NONE;
 		} else if (state == SessionState.OPENED_TOKEN_UPDATED) {
-			handlePendingAction();
 		}
 	}
 
@@ -926,10 +885,12 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 			String tipo = intent.getStringExtra(GeofenceUtils.ACTION_GEOFENCE_TRANSITION);
 
 			if (getString(R.string.geofence_transition_entered).equalsIgnoreCase(tipo)) {
-				int pos = Integer.valueOf(mPrefs.getGeofence(ids[0]).getMusica());
-				Log.d("MUSICA", String.valueOf(pos));
-				if (!binder.getMusicName().equalsIgnoreCase(listaMusicas.get(pos).getTitulo()))
+				SimpleGeofence geo = mPrefs.getGeofence(ids[0]);
+				int pos = Integer.valueOf(geo.getMusica());
+				if (!binder.getMusicName().equalsIgnoreCase(listaMusicas.get(pos).getTitulo())) {
 					binder.playMusic(pos);
+					postStatusUpdate(geo);
+				}
 			}
 			else {
 				binder.stop();
