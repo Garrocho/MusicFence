@@ -2,7 +2,6 @@ package com.garrocho;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -146,13 +146,14 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		if (canPresentShareDialog) {
 			FacebookDialog shareDialog = createShareDialogBuilderForLink(geo.getLatitude(), geo.getLongitude()).build();
 			uiHelper.trackPendingDialogCall(shareDialog.present());
+			//Toast.makeText(MainActivity.this, "Sucesso Ao Publicar!",Toast.LENGTH_LONG).show();
 		} else if (user != null && hasPublishPermission()) {
 			final String message = "Teste Man";
 			Request request = Request
 					.newStatusUpdateRequest(Session.getActiveSession(), message, place, tags, new Request.Callback() {
 						@Override
 						public void onCompleted(Response response) {
-							Toast.makeText(MainActivity.this, "Sucesso Ao Publicar!",Toast.LENGTH_LONG).show();
+							//Toast.makeText(MainActivity.this, "Sucesso Ao Publicar!",Toast.LENGTH_LONG).show();
 						}
 					});
 			request.executeAsync();
@@ -260,14 +261,15 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		this.listViewMusicas = (ListView)findViewById(R.id.lista_musicas);
 
 		listaMusicas = getAllMusics();
-		startService(new Intent("com.garrocho.cgplayer.SERVICE_PLAYER").putParcelableArrayListExtra("lista_musicas", (ArrayList<Musica>)listaMusicas));
+		startService(new Intent("com.garrocho.cgplayer.SERVICE_PLAYER_2").putParcelableArrayListExtra("lista_musicas", (ArrayList<Musica>)listaMusicas));
 
 		ArrayAdapter<Musica> adapter = new ArrayAdapter<Musica>(this, R.layout.lista_titulo_sumario_texto, listaMusicas);
 		listViewMusicas.setAdapter(adapter);
 		listViewMusicas.setOnItemClickListener(new OnItemClickListener(){
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				binder.playMusic(position);	
+				binder.playMusic(position);
+				Log.d("MUSICA", String.valueOf(listaMusicas.get(position)));
 			}
 		});
 
@@ -286,7 +288,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 
 		this.conexao = this;
 		if(binder == null || !binder.isBinderAlive()){
-			Intent intentPlayer = new Intent("com.garrocho.cgplayer.SERVICE_PLAYER");
+			Intent intentPlayer = new Intent("com.garrocho.cgplayer.SERVICE_PLAYER_2");
 			bindService(intentPlayer, this.conexao, Context.BIND_AUTO_CREATE);
 		}
 
@@ -321,30 +323,13 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 				} catch (Exception e) {
 				}
 
-				intent = new Intent("com.garrocho.cgplayer.video.VIDEO_PLAYER");
+				intent = new Intent("com.garrocho.cgplayer.video.VIDEO_PLAYER_2");
 				// Launch the activity with some extras
 				intent.putExtra("layout", "0");
 				intent.putExtra(Video.class.getName(), mapaVideos.get(position));
 				startActivityForResult(intent, 0);
 			}
 		});
-
-		final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-		TextView myMsg = new TextView(this);
-		alertDialog.setTitle("Instrucoes");
-		myMsg.setText("Pressione Em Uma Musica Para Adicionar Uma GeoFence!");
-		myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
-		myMsg.setTextSize(18);
-		alertDialog.setView(myMsg);
-		alertDialog.show();
-
-		new Handler().postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				alertDialog.dismiss();
-			}
-		}, 9000);
 
 		// start Facebook Login
 		/*this.secao = Session.openActiveSession(this, true, new Session.StatusCallback() {
@@ -361,14 +346,45 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 						@Override
 						public void onCompleted(GraphUser user, Response response) {
 							if (user != null) {
-								TextView welcome = (TextView) findViewById(R.id.welcome);
-								welcome.setText("Hello " + user.getName() + "!");
+								final AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+								TextView myMsg = new TextView(MainActivity.this);
+								alertDialog.setTitle("Bem Vindo " + user.getName());
+								myMsg.setText("Pressione Em Uma Musica Para Adicionar Uma GeoFence!");
+								myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+								myMsg.setTextSize(18);
+								alertDialog.setView(myMsg);
+								alertDialog.show();
+
+								new Handler().postDelayed(new Runnable() {
+
+									@Override
+									public void run() {
+										alertDialog.dismiss();
+									}
+								}, 9000);
 							}
 						}
 					});
 				}
 			}
 		});*/
+		
+		final AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+		TextView myMsg = new TextView(MainActivity.this);
+		alertDialog.setTitle("Instruções");
+		myMsg.setText("Pressione Em Uma Musica Para Adicionar Uma GeoFence!");
+		myMsg.setGravity(Gravity.CENTER_HORIZONTAL);
+		myMsg.setTextSize(18);
+		alertDialog.setView(myMsg);
+		alertDialog.show();
+
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				alertDialog.dismiss();
+			}
+		}, 9000);
 
 		uiHelper = new UiLifecycleHelper(this, callback);
 		uiHelper.onCreate(savedInstanceState);
@@ -418,7 +434,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		Intent intentPlayer = new Intent("com.garrocho.cgplayer.SERVICE_PLAYER");
+		Intent intentPlayer = new Intent("com.garrocho.cgplayer.SERVICE_PLAYER_2");
 		stopService(intentPlayer);
 	}
 
@@ -487,6 +503,7 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		List<Musica> songs = new ArrayList<Musica>();
 		if (cursor != null)
 			while(cursor.moveToNext()){
+				Log.d("path", cursor.getString(3));
 				Musica musica = new Musica(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getInt(5));
 				songs.add(musica);
 			}
@@ -683,150 +700,6 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 		}
 	}
 
-	public void onUnregisterByPendingIntentClicked(View view) {
-		/*
-		 * Remove all geofences set by this app. To do this, get the
-		 * PendingIntent that was added when the geofences were added
-		 * and use it as an argument to removeGeofences(). The removal
-		 * happens asynchronously; Location Services calls
-		 * onRemoveGeofencesByPendingIntentResult() (implemented in
-		 * the current Activity) when the removal is done
-		 */
-
-		/*
-		 * Record the removal as remove by Intent. If a connection error occurs,
-		 * the app can automatically restart the removal if Google Play services
-		 * can fix the error
-		 */
-		// Record the type of removal
-		mRemoveType = GeofenceUtils.REMOVE_TYPE.INTENT;
-
-		/*
-		 * Check for Google Play services. Do this after
-		 * setting the request type. If connecting to Google Play services
-		 * fails, onActivityResult is eventually called, and it needs to
-		 * know what type of request was in progress.
-		 */
-		if (!servicesConnected()) {
-
-			return;
-		}
-
-		// Try to make a removal request
-		try {
-			/*
-			 * Remove the geofences represented by the currently-active PendingIntent. If the
-			 * PendingIntent was removed for some reason, re-create it; since it's always
-			 * created with FLAG_UPDATE_CURRENT, an identical PendingIntent is always created.
-			 */
-			mGeofenceRemover.removeGeofencesByIntent(mGeofenceRequester.getRequestPendingIntent());
-
-		} catch (UnsupportedOperationException e) {
-			// Notify user that previous request hasn't finished.
-			Toast.makeText(this, R.string.remove_geofences_already_requested_error,
-					Toast.LENGTH_LONG).show();
-		}
-
-	}
-
-	/**
-	 * Called when the user clicks the "Remove geofence 1" button
-	 * @param view The view that triggered this callback
-	 */
-	public void onUnregisterGeofence1Clicked(View view) {
-		/*
-		 * Remove the geofence by creating a List of geofences to
-		 * remove and sending it to Location Services. The List
-		 * contains the id of geofence 1 ("1").
-		 * The removal happens asynchronously; Location Services calls
-		 * onRemoveGeofencesByPendingIntentResult() (implemented in
-		 * the current Activity) when the removal is done.
-		 */
-
-		// Create a List of 1 Geofence with the ID "1" and store it in the global list
-		mGeofenceIdsToRemove = Collections.singletonList("1");
-
-		/*
-		 * Record the removal as remove by list. If a connection error occurs,
-		 * the app can automatically restart the removal if Google Play services
-		 * can fix the error
-		 */
-		mRemoveType = GeofenceUtils.REMOVE_TYPE.LIST;
-
-		/*
-		 * Check for Google Play services. Do this after
-		 * setting the request type. If connecting to Google Play services
-		 * fails, onActivityResult is eventually called, and it needs to
-		 * know what type of request was in progress.
-		 */
-		if (!servicesConnected()) {
-
-			return;
-		}
-
-		// Try to remove the geofence
-		try {
-			mGeofenceRemover.removeGeofencesById(mGeofenceIdsToRemove);
-
-			// Catch errors with the provided geofence IDs
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (UnsupportedOperationException e) {
-			// Notify user that previous request hasn't finished.
-			Toast.makeText(this, R.string.remove_geofences_already_requested_error,
-					Toast.LENGTH_LONG).show();
-		}
-	}
-
-	/**
-	 * Called when the user clicks the "Remove geofence 2" button
-	 * @param view The view that triggered this callback
-	 */
-	public void onUnregisterGeofence2Clicked(View view) {
-		/*
-		 * Remove the geofence by creating a List of geofences to
-		 * remove and sending it to Location Services. The List
-		 * contains the id of geofence 2, which is "2".
-		 * The removal happens asynchronously; Location Services calls
-		 * onRemoveGeofencesByPendingIntentResult() (implemented in
-		 * the current Activity) when the removal is done.
-		 */
-
-		/*
-		 * Record the removal as remove by list. If a connection error occurs,
-		 * the app can automatically restart the removal if Google Play services
-		 * can fix the error
-		 */
-		mRemoveType = GeofenceUtils.REMOVE_TYPE.LIST;
-
-		// Create a List of 1 Geofence with the ID "2" and store it in the global list
-		mGeofenceIdsToRemove = Collections.singletonList("2");
-
-		/*
-		 * Check for Google Play services. Do this after
-		 * setting the request type. If connecting to Google Play services
-		 * fails, onActivityResult is eventually called, and it needs to
-		 * know what type of request was in progress.
-		 */
-		if (!servicesConnected()) {
-
-			return;
-		}
-
-		// Try to remove the geofence
-		try {
-			mGeofenceRemover.removeGeofencesById(mGeofenceIdsToRemove);
-
-			// Catch errors with the provided geofence IDs
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (UnsupportedOperationException e) {
-			// Notify user that previous request hasn't finished.
-			Toast.makeText(this, R.string.remove_geofences_already_requested_error,
-					Toast.LENGTH_LONG).show();
-		}
-	}
-
 	/*
 	 * Define a Broadcast receiver that receives updates from connection listeners and
 	 * the geofence transition service.
@@ -865,34 +738,51 @@ public class MainActivity extends FragmentActivity implements ServiceConnection 
 			}
 		}
 
-		/**
-		 * If you want to display a UI message about adding or removing geofences, put it here.
-		 *
-		 * @param context A Context for this component
-		 * @param intent The received broadcast Intent
-		 */
 		private void handleGeofenceStatus(Context context, Intent intent) {
 		}
 
-		/**
-		 * Report geofence transitions to the UI
-		 *
-		 * @param context A Context for this component
-		 * @param intent The Intent containing the transition
-		 */
 		private void handleGeofenceTransition(Context context, Intent intent) {
 			String[] ids = intent.getStringArrayExtra(GeofenceUtils.EXTRA_GEOFENCE_ID);
 			String tipo = intent.getStringExtra(GeofenceUtils.ACTION_GEOFENCE_TRANSITION);
 
 			if (getString(R.string.geofence_transition_entered).equalsIgnoreCase(tipo)) {
-				SimpleGeofence geo = mPrefs.getGeofence(ids[0]);
+				final SimpleGeofence geo = mPrefs.getGeofence(ids[0]);
+				
+				Log.d("AQUI", "AQUI");
 				int pos = Integer.valueOf(geo.getMusica());
 				if (!binder.getMusicName().equalsIgnoreCase(listaMusicas.get(pos).getTitulo())) {
 					binder.playMusic(pos);
-					postStatusUpdate(geo);
+					
+					Log.d("AQUI2", "AQUI2");
+					AlertDialog.Builder builder = new AlertDialog.Builder(
+	                        MainActivity.this);
+	                builder.setCancelable(true);
+	                builder.setTitle("Postar No Facebook?");
+	                builder.setMessage("Você Entrou em uma GeoFence!\n\n" + listaMusicas.get(pos).getTitulo());
+	                builder.setInverseBackgroundForced(true);
+	                builder.setPositiveButton("Sim",
+	                        new DialogInterface.OnClickListener() {
+	                            @Override
+	                            public void onClick(DialogInterface dialog,
+	                                    int which) {
+	                            	postStatusUpdate(geo);
+	                                dialog.dismiss();
+	                            }
+	                        });
+	                builder.setNegativeButton("Não",
+	                        new DialogInterface.OnClickListener() {
+	                            @Override
+	                            public void onClick(DialogInterface dialog,
+	                                    int which) {
+	                                dialog.dismiss();
+	                            }
+	                        });
+	                AlertDialog alert = builder.create();
+	                alert.show();
 				}
 			}
 			else {
+				Log.d("STOP", "STOP MAN");
 				binder.stop();
 			}
 		}

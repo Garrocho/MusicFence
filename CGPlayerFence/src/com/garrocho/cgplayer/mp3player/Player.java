@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -121,6 +122,7 @@ public class Player extends Service implements OnCompletionListener {
 			if(index < playlist.size()){
 				musicIndex = index;
 			}
+			
 			changeMusic = true;
 			this.play();
 		}

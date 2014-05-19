@@ -58,7 +58,7 @@ public class MapActivity extends FragmentActivity {
 	private static final long GEOFENCE_EXPIRATION_IN_HOURS = 12;
 	private static final long GEOFENCE_EXPIRATION_IN_MILLISECONDS =
 			GEOFENCE_EXPIRATION_IN_HOURS * DateUtils.HOUR_IN_MILLIS;
-
+	
 	private SimpleGeofenceStore mPrefs;
 	private ArrayList<String> lista = new ArrayList<String>();
 
@@ -69,6 +69,30 @@ public class MapActivity extends FragmentActivity {
 			SimpleGeofence fence = mPrefs.getGeofence(String.valueOf(i));
 			addMarkerForFence(fence);
 		}
+	}
+	
+	private Location currentBestLocation = null;
+	private LocationManager locationManager;
+	
+	private Location getLastBestLocation() {
+	    Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+	    Location locationNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+	    long GPSLocationTime = 0;
+	    if (null != locationGPS) { GPSLocationTime = locationGPS.getTime(); }
+
+	    long NetLocationTime = 0;
+
+	    if (null != locationNet) {
+	        NetLocationTime = locationNet.getTime();
+	    }
+
+	    if ( 0 < GPSLocationTime - NetLocationTime ) {
+	        return locationGPS;
+	    }
+	    else {
+	        return locationNet;
+	    }
 	}
 
 	@SuppressLint("NewApi")
@@ -140,32 +164,30 @@ public class MapActivity extends FragmentActivity {
 							intent.putStringArrayListExtra(String.valueOf(GeofenceUtils.LISTA_GEOFENCES_ADDED), lista);
 							MapActivity.this.setResult(Activity.RESULT_OK, intent);
 							alertDialog.dismiss();
-							
-							new Handler().postDelayed(new Runnable() {
-
-								@Override
-								public void run() {
-									MapActivity.this.onBackPressed();
-								}
-							}, 2000);
 						}
 					});
 				}
 			});
 
 			desenharMakers();
-
+			
 			mMap.setMyLocationEnabled(true);
-			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			Criteria criteria = new Criteria();
 			String provider = locationManager.getBestProvider(criteria, true);
 			Location location = locationManager.getLastKnownLocation(provider);
-
-			CameraPosition INIT = new CameraPosition.Builder()
+			CameraPosition INIT = null;
+			
+			if (location == null)
+				location = getLastBestLocation();
+			
+			INIT = new CameraPosition.Builder()
 			.target(new LatLng(location.getLatitude(), location.getLongitude()))
 			.zoom( 17.5F )
 			.build();
-			mMap.animateCamera( CameraUpdateFactory.newCameraPosition(INIT) );
+			
+			if (INIT != null)
+				mMap.animateCamera( CameraUpdateFactory.newCameraPosition(INIT));
 		}
 	}
 
