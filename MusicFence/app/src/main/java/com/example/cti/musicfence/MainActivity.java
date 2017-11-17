@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     private ServiceConnection conexao;
     private mp3player.PlayerBinder binder;
     private ListView listaViewMusicas;
-    private List<Musica> listaMusic;
+    private ArrayList<Musica> listaMusic;
     public static TextView musicaAtual;
     private Context context;
     private static final int MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 1;
@@ -45,20 +46,10 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_inicio);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         seekBar = (SeekBar) findViewById(R.id.music_progress);
-        this.listaViewMusicas = (ListView)findViewById(R.id.listaMusicas);
+        this.listaViewMusicas = (ListView)findViewById(R.id.lista_musicas);
 
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
@@ -98,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         Intent intentService = new Intent("com.example.cti.musicfence.SERVICE_PLAYER_2").putParcelableArrayListExtra("listaMusicas",
                 (ArrayList<Musica>)listaMusic);
-        intentService.setPackage("com.example.cti");
+        intentService.setPackage("com.example.cti.");
         startService(intentService);
 
         ArrayAdapter<Musica> adapter = new ArrayAdapter<Musica>(this,R.layout.lista_titulo_sumario_texto, listaMusic);
@@ -113,9 +104,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
         this.conexao = this;
         if(binder == null || !binder.isBinderAlive()){
-            Intent intentPlayer = new Intent("com.example.cti.musicfence.SERVICE_PLAYER_2");
-            intentPlayer.setPackage("com.example.cti");
+            Intent intentPlayer = new Intent(this,mp3player.class);
             bindService(intentPlayer, this.conexao, Context.BIND_AUTO_CREATE);
+            startService(intentPlayer);
         }
 
     }
@@ -123,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent intentPlayer = new Intent("com.example.cti.musicfence.SERVICE_PLAYER");
+        Intent intentPlayer = new Intent("com.example.cti.musicfence.SERVICE_PLAYER_2");
         stopService(intentPlayer);
     }
 
@@ -161,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public void onServiceConnected(ComponentName name, IBinder service) {
         this.binder = (mp3player.PlayerBinder) service;
         //this.musicas.setText(binder.getPath());
+        mp3player.playlist = listaMusic;
         try {
             MainActivity.seekBar.setMax(this.binder.getDuration());
             MainActivity.seekBar.setProgress(this.binder.getCurrentPosition());
@@ -174,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         this.binder = null;
     }
 
-    public List<Musica> getAllMusic(){
+    public ArrayList<Musica> getAllMusic(){
         String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
         String[] projection = {
                 MediaStore.Audio.Media._ID,
@@ -187,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         Cursor cursor = getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,projection,selection,
                 null,
                 null);
-        List<Musica> songs = new ArrayList<Musica>();
+        ArrayList<Musica> songs = new ArrayList<Musica>();
         if(cursor != null)
             while (cursor.moveToNext()){
                 Musica musica = new Musica(cursor.getInt(0),cursor.getString(1),cursor.getString(2),

@@ -5,13 +5,15 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.SeekBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class mp3player extends Service implements MediaPlayer.OnCompletionListener{
     private MediaPlayer mediaPlayer;
-    private List<Musica> playlist;
+    public static ArrayList<Musica> playlist;
     private int MusicIndex;
     public boolean playing;
     public boolean paused;
@@ -119,6 +121,12 @@ public class mp3player extends Service implements MediaPlayer.OnCompletionListen
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        mediaPlayer = new MediaPlayer();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.playlist = intent.getParcelableArrayListExtra("listaMusicas");
         if (this.playlist != null) {
@@ -155,6 +163,9 @@ public class mp3player extends Service implements MediaPlayer.OnCompletionListen
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        else {
+            Log.d("error musicfence", "playslist null");
         }
 
         return super.onStartCommand(intent ,flags,startId);

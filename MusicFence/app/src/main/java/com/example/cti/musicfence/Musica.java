@@ -3,25 +3,25 @@ package com.example.cti.musicfence;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Cti on 13/11/2017.
- */
-
-public class Musica implements Parcelable {
+public class Musica implements Parcelable{
     private int id;
     private String artista;
     private String titulo;
     private String path;
-    private String nomeArq;
+    private String nomeArquivo;
     private int duracao;
 
-    public Musica(int id,String artista,String titulo,String path,String nomeArq,int duracao){
+    public Musica() {
+
+    }
+
+    public Musica(int id, String artista, String title, String path, String nome, int duracao) {
         super();
         this.id = id;
         this.artista = artista;
-        this.titulo = titulo;
+        this.titulo = title;
         this.path = path;
-        this.nomeArq = nomeArq;
+        this.nomeArquivo = nome;
         this.duracao = duracao;
     }
 
@@ -58,11 +58,11 @@ public class Musica implements Parcelable {
     }
 
     public String getNomeArquivo() {
-        return nomeArq;
+        return nomeArquivo;
     }
 
     public void setNomeArquivo(String nome) {
-        this.nomeArq = nome;
+        this.nomeArquivo = nome;
     }
 
     public int getDuracao() {
@@ -73,21 +73,15 @@ public class Musica implements Parcelable {
         this.duracao = duracao;
     }
 
-    public static final Creator<Musica> CREATOR = new Creator<Musica>() {
-        @Override
-        public Musica createFromParcel(Parcel in) {
-            return new Musica(in.readInt(),in.readString(),in.readString(),in.readString(),
-                    in.readString(),in.readInt());
-        }
-
-        @Override
-        public Musica[] newArray(int size) {
-            return new Musica[size];
-        }
-    };
+    @Override
+    public String toString() {
+        //return String.format("%d - %s - %s - %s - %s - %d", id, artista, titulo, path, nomeArquivo, duracao);
+        return String.format("%s", titulo);
+    }
 
     @Override
     public int describeContents() {
+        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -97,7 +91,17 @@ public class Musica implements Parcelable {
         dest.writeString(artista);
         dest.writeString(titulo);
         dest.writeString(path);
-        dest.writeString(nomeArq);
+        dest.writeString(nomeArquivo);
         dest.writeInt(duracao);
     }
+
+    public static final Parcelable.Creator<Musica> CREATOR = new Parcelable.Creator<Musica>() {
+        public Musica createFromParcel(Parcel in) {
+            return new Musica(in.readInt(), in.readString(), in.readString(), in.readString(), in.readString(), in.readInt());
+        }
+
+        public Musica[] newArray(int size) {
+            return new Musica[size];
+        }
+    };
 }
