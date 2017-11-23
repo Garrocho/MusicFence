@@ -101,6 +101,14 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 binder.playMusic(position);
             }
         });
+        listaViewMusicas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
 
         this.conexao = this;
         if(binder == null || !binder.isBinderAlive()){
@@ -114,8 +122,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent intentPlayer = new Intent("com.example.cti.musicfence.SERVICE_PLAYER_2");
-        stopService(intentPlayer);
+        Intent intentService = new Intent("com.example.cti.musicfence.SERVICE_PLAYER_2");
+        intentService.setPackage("com.example.cti.");
+        stopService(intentService);
     }
 
     public void playMusic(View view) {
@@ -157,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             MainActivity.seekBar.setMax(this.binder.getDuration());
             MainActivity.seekBar.setProgress(this.binder.getCurrentPosition());
         } catch(Exception e) {
+            e.printStackTrace();
             return;
         }
     }
