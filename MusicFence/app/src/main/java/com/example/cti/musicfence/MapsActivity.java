@@ -2,8 +2,10 @@ package com.example.cti.musicfence;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -16,7 +18,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -33,11 +40,14 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import me.drakeet.materialdialog.MaterialDialog;
@@ -64,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addApi(LocationServices.API)
                 .build();
         googleApiClient.connect();
+
     }
 
 
@@ -137,6 +148,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         callAcessLocation();
 
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(final LatLng latLng) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+                String names[] = {"50","100","200","500"};
+                final AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
+                        .create();
+                LayoutInflater layoutInflater = getLayoutInflater();
+                View convertView = (View) layoutInflater.inflate(R.layout.custom,null);
+                alertDialog.setView(convertView);
+                alertDialog.setTitle("Selecione o Raio");
+                ListView listView = (ListView) convertView.findViewById(R.id.listView1);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this,android.R.layout.simple_list_item_1,names);
+                listView.setAdapter(adapter);
+                alertDialog.show();
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        String item = ((TextView)view).getText().toString();
+                        addMarker(latLng,item);
+                        alertDialog.dismiss();
+                    }
+                });
+
+
+            }
+        });
+
         //LatLng suaPosicao = new LatLng(latitude, longitude);
         //mMap.addMarker(new MarkerOptions().position(suaPosicao).title("Sua posicao"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(suaPosicao));
@@ -186,5 +225,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    public void addMarker(LatLng point, String item){
+        if(point != null){
+            CircleOptions circleOptions = new CircleOptions()
+                    .center(new LatLng(point.latitude, point.longitude))
+                    .radius(Float.valueOf(item))
+                    .fillColor(0x40ff0000)
+                    .strokeColor(Color.TRANSPARENT)
+                    .strokeWidth(2);
+            Circle circle = mMap.addCircle(circleOptions);
+        }
     }
 }
