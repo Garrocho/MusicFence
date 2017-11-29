@@ -33,17 +33,17 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MapsActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MapsActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/MapsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-222">
-              <caret line="68" column="44" lean-forward="false" selection-start-line="68" selection-start-column="44" selection-end-line="68" selection-end-column="44" />
+            <state relative-caret-position="-133">
+              <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
               <folding>
+                <element signature="method#onCreate#0;class#MapsActivity#0" expanded="false" />
                 <element signature="method#readMyCurrentCoordenadas#0;class#MapsActivity#0" expanded="false" />
                 <element signature="method#callAcessLocation#0;class#MapsActivity#0" expanded="false" />
                 <element signature="method#onStop#0;class#MapsActivity#0" expanded="false" />
                 <element signature="method#pararConexao#0;class#MapsActivity#0" expanded="false" />
-                <element signature="method#onMapReady#0;class#MapsActivity#0" expanded="false" />
                 <element signature="e#6079#7495#0" expanded="true" />
                 <element signature="e#6885#6893#0" expanded="true" />
                 <element signature="e#7086#7467#0" expanded="true" />
@@ -52,6 +52,20 @@
                 <element signature="class#meuLocationListener#0;class#MapsActivity#0" expanded="false" />
                 <element signature="method#onConnected#0;class#MapsActivity#0" expanded="false" />
                 <element signature="method#onConnectionSuspended#0;class#MapsActivity#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dbHelper.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/dbHelper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="27" column="5" lean-forward="true" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#788#789#0" expanded="true" />
+                <element signature="e#828#829#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -103,8 +117,8 @@
         <option value="layoutResourceFile_vertical" />
         <option value="resourceFile" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="layoutResourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -1721,6 +1735,7 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/custom.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/viewopt.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/MapsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/dbHelper.java" />
       </list>
     </option>
   </component>
@@ -2008,7 +2023,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511979563868" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511980507900" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2056,7 +2071,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511979563868" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511980507900" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2239,7 +2254,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511979563869" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1511980507901" />
       </method>
     </configuration>
     <list size="1">
@@ -2327,34 +2342,18 @@
             <option name="EMULATED" value="true" />
           </properties>
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/MapsActivity.java</url>
+          <line>147</line>
+          <properties />
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="4" />
+      <option name="time" value="5" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/MapsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="18" column="22" lean-forward="false" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
-          <folding>
-            <element signature="method#readMyCurrentCoordenadas#0;class#MapsActivity#0" expanded="false" />
-            <element signature="method#callAcessLocation#0;class#MapsActivity#0" expanded="false" />
-            <element signature="method#onStop#0;class#MapsActivity#0" expanded="false" />
-            <element signature="method#pararConexao#0;class#MapsActivity#0" expanded="false" />
-            <element signature="method#onMapReady#0;class#MapsActivity#0" expanded="false" />
-            <element signature="e#6079#7495#0" expanded="true" />
-            <element signature="e#6885#6893#0" expanded="true" />
-            <element signature="e#7086#7467#0" expanded="true" />
-            <element signature="e#7466#7467#0" expanded="true" />
-            <element signature="e#7494#7495#0" expanded="true" />
-            <element signature="class#meuLocationListener#0;class#MapsActivity#0" expanded="false" />
-            <element signature="method#onConnected#0;class#MapsActivity#0" expanded="false" />
-            <element signature="method#onConnectionSuspended#0;class#MapsActivity#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_maps2.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -2686,14 +2685,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/MapsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-222">
-          <caret line="68" column="44" lean-forward="false" selection-start-line="68" selection-start-column="44" selection-end-line="68" selection-end-column="44" />
+        <state relative-caret-position="-133">
+          <caret line="63" column="0" lean-forward="false" selection-start-line="63" selection-start-column="0" selection-end-line="63" selection-end-column="0" />
           <folding>
+            <element signature="method#onCreate#0;class#MapsActivity#0" expanded="false" />
             <element signature="method#readMyCurrentCoordenadas#0;class#MapsActivity#0" expanded="false" />
             <element signature="method#callAcessLocation#0;class#MapsActivity#0" expanded="false" />
             <element signature="method#onStop#0;class#MapsActivity#0" expanded="false" />
             <element signature="method#pararConexao#0;class#MapsActivity#0" expanded="false" />
-            <element signature="method#onMapReady#0;class#MapsActivity#0" expanded="false" />
             <element signature="e#6079#7495#0" expanded="true" />
             <element signature="e#6885#6893#0" expanded="true" />
             <element signature="e#7086#7467#0" expanded="true" />
@@ -2702,6 +2701,18 @@
             <element signature="class#meuLocationListener#0;class#MapsActivity#0" expanded="false" />
             <element signature="method#onConnected#0;class#MapsActivity#0" expanded="false" />
             <element signature="method#onConnectionSuspended#0;class#MapsActivity#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/dbHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" column="5" lean-forward="true" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#788#789#0" expanded="true" />
+            <element signature="e#828#829#0" expanded="true" />
           </folding>
         </state>
       </provider>
