@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                intent.putExtra("nomeMusica", ((TextView)view).getText().toString());
                 startActivity(intent);
                 return false;
             }

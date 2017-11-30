@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -58,6 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
+    dbFunc func;
+    String nomeMusica;
 
 
     @Override
@@ -74,7 +77,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addApi(LocationServices.API)
                 .build();
         googleApiClient.connect();
-
+        Intent intent = getIntent();
+        nomeMusica = intent.getStringExtra("nomeMusica");
+        Log.d("Musica", nomeMusica);
     }
 
 
@@ -153,6 +158,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onMapLongClick(final LatLng latLng) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
                 String names[] = {"50","100","200","500"};
+                final double[] raio = new double[1];
                 final AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
                         .create();
                 LayoutInflater layoutInflater = getLayoutInflater();
@@ -168,7 +174,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String item = ((TextView)view).getText().toString();
                         addMarker(latLng,item);
+                        raio[0] = Double.parseDouble(item);
                         alertDialog.dismiss();
+                        Log.d("Latitude do Click", String.valueOf(latLng.latitude));
+                        Log.d("Longitude do Click", String.valueOf(latLng.longitude));
+                        Log.d("Raio ", String.valueOf(raio[0]));
+                        Log.d("Musica nome", nomeMusica);
+                        /*if(func.adicionar(latLng.latitude,latLng.longitude,raio[0],nomeMusica) == true){
+                            Toast.makeText(MapsActivity.this, "Geofence adicionada com sucesso.", Toast.LENGTH_SHORT).show();
+                        }
+                        */
                     }
                 });
 

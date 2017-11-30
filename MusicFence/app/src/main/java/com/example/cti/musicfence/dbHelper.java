@@ -18,8 +18,8 @@ public class dbHelper extends SQLiteOpenHelper {
             "raio DOUBLE,"+
             "music VARCHAR)";
 
-    public dbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public dbHelper(Context context) {
+        super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }
 
     @Override
