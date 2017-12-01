@@ -40,14 +40,18 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -61,7 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient googleApiClient;
     dbFunc func;
     String nomeMusica;
-
+    private Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         nomeMusica = intent.getStringExtra("nomeMusica");
         Log.d("Musica", nomeMusica);
+        func = new dbFunc(this);
     }
 
 
@@ -117,7 +122,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         LatLng minhaPos = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(minhaPos).title("Sua Posicao"));
+        mMap.addMarker(new MarkerOptions().position(minhaPos).title("Sua Posicao")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(minhaPos, 15));
         Log.i("Posicao", "Lat: " + latitude + "|Long: " + longitude);
     }
@@ -139,21 +145,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+    public void desenhaGeoFence(){
+        for (geoFence g : func.listar()) {
+            LatLng latLng = new LatLng(g.getLatitude(),g.getLongitude());
+            String item = String.valueOf(g.getRaio());
+            String music = g.getMusica();
+            addMarker(latLng,item,music);
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         callAcessLocation();
+        desenhaGeoFence();
 
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
+
             @Override
             public void onMapLongClick(final LatLng latLng) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
@@ -173,21 +182,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String item = ((TextView)view).getText().toString();
-                        addMarker(latLng,item);
+                        addMarker(latLng,item,nomeMusica);
                         raio[0] = Double.parseDouble(item);
                         alertDialog.dismiss();
                         Log.d("Latitude do Click", String.valueOf(latLng.latitude));
                         Log.d("Longitude do Click", String.valueOf(latLng.longitude));
                         Log.d("Raio ", String.valueOf(raio[0]));
                         Log.d("Musica nome", nomeMusica);
-                        /*if(func.adicionar(latLng.latitude,latLng.longitude,raio[0],nomeMusica) == true){
+                        if(func.adicionar(latLng.latitude,latLng.longitude,raio[0],nomeMusica) == true){
                             Toast.makeText(MapsActivity.this, "Geofence adicionada com sucesso.", Toast.LENGTH_SHORT).show();
                         }
-                        */
                     }
                 });
-
-
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        Toast.makeText(MapsActivity.this, "voce clicou no marker", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                });
             }
         });
 
@@ -242,8 +255,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void addMarker(LatLng point, String item){
+    public void addMarker(LatLng point, String item, String musica){
         if(point != null){
+            mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude,point.longitude))
+            .title("Geofence "+ musica)
+            .snippet("Raio " + item));
+
+
             CircleOptions circleOptions = new CircleOptions()
                     .center(new LatLng(point.latitude, point.longitude))
                     .radius(Float.valueOf(item))
