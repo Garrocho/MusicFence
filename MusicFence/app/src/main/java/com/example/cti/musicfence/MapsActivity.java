@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlaceReport;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,6 +68,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     dbFunc func;
     String nomeMusica;
     private Marker marker;
+    private Button button;
+    private GeofencingClient geofencingClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         nomeMusica = intent.getStringExtra("nomeMusica");
         Log.d("Musica", nomeMusica);
         func = new dbFunc(this);
+        button = (Button)findViewById(R.id.bDeleteFence);
+        geofencingClient = LocationServices.getGeofencingClient(this);
     }
 
 
@@ -159,10 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         callAcessLocation();
         desenhaGeoFence();
-
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-
-
             @Override
             public void onMapLongClick(final LatLng latLng) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
@@ -194,20 +197,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
-                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        Toast.makeText(MapsActivity.this, "voce clicou no marker", Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                });
             }
         });
-
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+                final LatLng latLng1 = marker.getPosition();
+                button.setVisibility(View.VISIBLE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteFence(latLng1);
+                        marker.remove();
+                        button.setVisibility(View.INVISIBLE);
+                    }
+                });
+                return false;
+            }
+        });
         //LatLng suaPosicao = new LatLng(latitude, longitude);
         //mMap.addMarker(new MarkerOptions().position(suaPosicao).title("Sua posicao"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(suaPosicao));
 
+    }
+
+    public void deleteFence(LatLng latLng){
+        func.remover(latLng.latitude,latLng.longitude);
+        Toast.makeText(this, "GeoFence removida com sucesso.", Toast.LENGTH_SHORT).show();
     }
 
         // Add a marker in Sydney and move the camera

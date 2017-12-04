@@ -9,5 +9,14 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
+    <Button
+        android:id="@+id/bDeleteFence"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="320dp"
+        android:background="@android:color/white"
+        android:onClick=""
+        android:text="X"
+        android:visibility="invisible" />
 
 </FrameLayout>

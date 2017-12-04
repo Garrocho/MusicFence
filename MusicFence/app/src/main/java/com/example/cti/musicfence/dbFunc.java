@@ -28,9 +28,9 @@ public class dbFunc {
         return gateway.getDatabase().insert(tabela,null,contentValues) > 0;
     }
 
-    public boolean remover(double latitude, double longitude, double raio, String musica){
-        String[] cv = new String[]{""+latitude,""+longitude,""+raio,musica};
-        return gateway.getDatabase().delete(tabela,"latitude=? and longitude=? and raio=? and musica=?",cv) > 0;
+    public boolean remover(double latitude, double longitude){
+        String[] cv = new String[]{""+latitude,""+longitude};
+        return gateway.getDatabase().delete(tabela,"latitude=? and longitude=?",cv) > 0;
     }
 
     public ArrayList<geoFence> listar(){
