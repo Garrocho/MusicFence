@@ -1,5 +1,7 @@
 package com.example.cti.musicfence;
 
+import com.google.android.gms.location.Geofence;
+
 /**
  * Created by laboratorio on 01/12/17.
  */
@@ -51,4 +53,5 @@ public class geoFence{
     public void setMusica(String musica) {
         this.musica = musica;
     }
+
 }
