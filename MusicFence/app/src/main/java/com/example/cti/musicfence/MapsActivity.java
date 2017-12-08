@@ -3,6 +3,7 @@ package com.example.cti.musicfence;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,9 +33,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlaceReport;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,6 +54,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -69,7 +75,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String nomeMusica;
     private Marker marker;
     private Button button;
-    private GeofencingClient geofencingClient;
+    private GeofencingClient geofencingClient = LocationServices.getGeofencingClient(this);
+    private PendingIntent pendingIntent;
+    private long duracaoGeofence = 60*60+1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         nomeMusica = intent.getStringExtra("nomeMusica");
         Log.d("Musica", nomeMusica);
         func = new dbFunc(this);
-        button = (Button)findViewById(R.id.bDeleteFence);
+        button = (Button) findViewById(R.id.bDeleteFence);
         geofencingClient = LocationServices.getGeofencingClient(this);
     }
 
@@ -118,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (isGPSEnable) {
                 if (location == null) {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, locationListener);
-                        Log.d("GPS", "GPS Ativo");
+                    Log.d("GPS", "GPS Ativo");
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     if (location != null) {
                         latitude = location.getLatitude();
@@ -151,12 +159,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void desenhaGeoFence(){
+    public void desenhaGeoFence() {
         for (geoFence g : func.listar()) {
-            LatLng latLng = new LatLng(g.getLatitude(),g.getLongitude());
+            LatLng latLng = new LatLng(g.getLatitude(), g.getLongitude());
             String item = String.valueOf(g.getRaio());
             String music = g.getMusica();
-            addMarker(latLng,item,music);
+            addMarker(latLng, item, music);
         }
     }
 
@@ -168,31 +176,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(final LatLng latLng) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
-                String names[] = {"50","100","200","500"};
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                String names[] = {"50", "100", "200", "500"};
                 final double[] raio = new double[1];
                 final AlertDialog alertDialog = new AlertDialog.Builder(MapsActivity.this)
                         .create();
                 LayoutInflater layoutInflater = getLayoutInflater();
-                View convertView = (View) layoutInflater.inflate(R.layout.custom,null);
+                View convertView = (View) layoutInflater.inflate(R.layout.custom, null);
                 alertDialog.setView(convertView);
                 alertDialog.setTitle("Selecione o Raio");
                 ListView listView = (ListView) convertView.findViewById(R.id.listView1);
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this,android.R.layout.simple_list_item_1,names);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this, android.R.layout.simple_list_item_1, names);
                 listView.setAdapter(adapter);
                 alertDialog.show();
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        String item = ((TextView)view).getText().toString();
-                        addMarker(latLng,item,nomeMusica);
+                        String item = ((TextView) view).getText().toString();
+                        addMarker(latLng, item, nomeMusica);
                         raio[0] = Double.parseDouble(item);
                         alertDialog.dismiss();
                         Log.d("Latitude do Click", String.valueOf(latLng.latitude));
                         Log.d("Longitude do Click", String.valueOf(latLng.longitude));
                         Log.d("Raio ", String.valueOf(raio[0]));
                         Log.d("Musica nome", nomeMusica);
-                        if(func.adicionar(latLng.latitude,latLng.longitude,raio[0],nomeMusica) == true){
+                        if (func.adicionar(latLng.latitude, latLng.longitude, raio[0], nomeMusica) == true) {
+                            Geofence geofence = createGeofence(latLng, raio[0]);
+                            GeofencingRequest geofencingRequest = geofencingRequest(geofence);
+                            geofencingClient.addGeofences(geofencingRequest,pendingIntent());
                             Toast.makeText(MapsActivity.this, "Geofence adicionada com sucesso.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -221,18 +232,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void deleteFence(LatLng latLng){
-        func.remover(latLng.latitude,latLng.longitude);
+    public void deleteFence(LatLng latLng) {
+        func.remover(latLng.latitude, latLng.longitude);
         Toast.makeText(this, "GeoFence removida com sucesso.", Toast.LENGTH_SHORT).show();
     }
 
-        // Add a marker in Sydney and move the camera
+    // Add a marker in Sydney and move the camera
         /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
-    private final class meuLocationListener implements LocationListener
-    {
+    private final class meuLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
 
@@ -271,11 +281,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void addMarker(LatLng point, String item, String musica){
-        if(point != null){
-            mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude,point.longitude))
-            .title("Geofence "+ musica)
-            .snippet("Raio " + item));
+    public void addMarker(LatLng point, String item, String musica) {
+        if (point != null) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(point.latitude, point.longitude))
+                    .title("Geofence " + musica)
+                    .snippet("Raio " + item));
 
 
             CircleOptions circleOptions = new CircleOptions()
@@ -287,4 +297,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Circle circle = mMap.addCircle(circleOptions);
         }
     }
+
+    private Geofence createGeofence(LatLng latLng, double radius) {
+        Log.d("Criar geofence", "Criada.");
+        return new Geofence.Builder()
+                .setRequestId("0")
+                .setCircularRegion(latLng.latitude, latLng.longitude, (float) radius)
+                .setExpirationDuration(duracaoGeofence)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build();
+    }
+
+    private GeofencingRequest geofencingRequest(Geofence geofence) {
+        Log.d("GeoRequest ", "Request");
+        return new GeofencingRequest.Builder()
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .addGeofence(geofence)
+                .build();
+    }
+
+    private PendingIntent pendingIntent() {
+        Log.d("Criar Pending Intent", "Criado.");
+        if (pendingIntent != null)
+            return pendingIntent;
+
+        Intent intent = new Intent(this, GeoFenceTransitionsIntentService.class);
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
 }

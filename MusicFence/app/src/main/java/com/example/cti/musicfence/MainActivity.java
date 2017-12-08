@@ -29,6 +29,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements ServiceConnection {
 
     public static SeekBar seekBar;
+    public static Intent makeNotificationIntent;
     private ServiceConnection conexao;
     private mp3player.PlayerBinder binder;
     private ListView listaViewMusicas;
@@ -188,5 +189,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                 songs.add(musica);
             }
         return songs;
+    }
+
+    public static Intent makeNotificationIntent(Context applicationContext, String msg) {
+        return makeNotificationIntent;
     }
 }
