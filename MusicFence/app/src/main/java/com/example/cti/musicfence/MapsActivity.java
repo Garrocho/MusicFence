@@ -67,16 +67,14 @@ import me.drakeet.materialdialog.MaterialDialog;
 
 import static com.google.android.gms.common.api.GoogleApiClient.*;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, ResultCallback<Status> {
 
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
     dbFunc func;
     String nomeMusica;
-    private Marker marker;
     private Button button;
     private GeofencingClient geofencingClient;
-    private PendingIntent pendingIntent;
     private long duracaoGeofence = 60*60+1000;
 
     @Override
@@ -203,7 +201,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (func.adicionar(latLng.latitude, latLng.longitude, raio[0], nomeMusica) == true) {
                             Geofence geofence = createGeofence(latLng, raio[0]);
                             GeofencingRequest geofencingRequest = geofencingRequest(geofence);
-                            geofencingClient.addGeofences(geofencingRequest,pendingIntent());
+                            addGeo(geofencingRequest);
                             Toast.makeText(MapsActivity.this, "Geofence adicionada com sucesso.", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -235,6 +233,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void deleteFence(LatLng latLng) {
         func.remover(latLng.latitude, latLng.longitude);
         Toast.makeText(this, "GeoFence removida com sucesso.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+        Log.i("Resultado", ""+status);
+        if(status.isSuccess()){
+            Log.d("Criacao", "bem sucedida.");
+        }
     }
 
     // Add a marker in Sydney and move the camera
@@ -298,6 +304,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void addGeo(GeofencingRequest request){
+        Log.d("Geo Add: ", "Adicionada.");
+        LocationServices.GeofencingApi.addGeofences(googleApiClient,request,CriargeoPendingIntent()
+        ).setResultCallback(this);
+    }
+
     private Geofence createGeofence(LatLng latLng, double radius) {
         Log.d("Criar geofence", "Criada.");
         return new Geofence.Builder()
@@ -317,10 +329,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
     }
 
-    private PendingIntent pendingIntent() {
+    private PendingIntent geoPendingIntent;
+    private PendingIntent CriargeoPendingIntent() {
         Log.d("Criar Pending Intent", "Criado.");
-        if (pendingIntent != null)
-            return pendingIntent;
+        if (geoPendingIntent != null)
+            return geoPendingIntent;
 
         Intent intent = new Intent(this, GeoFenceTransitionsIntentService.class);
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

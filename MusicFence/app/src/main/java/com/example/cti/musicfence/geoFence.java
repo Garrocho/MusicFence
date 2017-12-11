@@ -6,7 +6,7 @@ import com.google.android.gms.location.Geofence;
  * Created by laboratorio on 01/12/17.
  */
 
-public class geoFence{
+public class geoFence implements Geofence {
     public double latitude;
     public double longitude;
     public double raio;
@@ -54,4 +54,8 @@ public class geoFence{
         this.musica = musica;
     }
 
+    @Override
+    public String getRequestId() {
+        return "0";
+    }
 }

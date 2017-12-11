@@ -2,6 +2,7 @@ package com.example.cti.musicfence;
 
 import android.Manifest;
 import android.app.ActionBar;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +13,11 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,10 +26,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingClient;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ServiceConnection {
+public class MainActivity extends AppCompatActivity implements ServiceConnection, ResultCallback<Status>,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     public static SeekBar seekBar;
     public static Intent makeNotificationIntent;
@@ -37,7 +54,8 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public static TextView musicaAtual;
     private Context context;
     private static final int MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 1;
-
+    private long duracaoGeofence = 60*60+1000;
+    private GeofencingClient geofencingClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +76,21 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
 
         musicaAtual = (TextView)findViewById(R.id.textView2);
+        geofencingClient = LocationServices.getGeofencingClient(this);
+        Intent intentGeofence = new Intent(".GeoFenceTransitionsIntentService");
+        intentGeofence.setPackage("com.example.cti.");
+        startService(intentGeofence);
+        dbFunc dbFunc = new dbFunc(this);
+        for (geoFence g : dbFunc.listar()) {
+            Geofence g2 = createGeofence(g);
+            GeofencingRequest geofencingRequest = geofencingRequest(g2);
+            geofencingClient.addGeofences(geofencingRequest,CriargeoPendingIntent()).addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("Status", "sucesso.");
+                }
+            });
+        }
     }
 
     @Override
@@ -74,6 +107,33 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
+    private Geofence createGeofence(geoFence g) {
+        Log.d("Criar geofence", "Criada.");
+        return new Geofence.Builder()
+                .setRequestId("0")
+                .setCircularRegion(g.getLatitude(), g.getLongitude(), (float) g.getRaio())
+                .setExpirationDuration(duracaoGeofence)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                        Geofence.GEOFENCE_TRANSITION_EXIT)
+                .build();
+    }
+
+    private PendingIntent geoPendingIntent;
+    private PendingIntent CriargeoPendingIntent() {
+        Log.d("Criar Pending Intent", "Criado.");
+        if (geoPendingIntent != null)
+            return geoPendingIntent;
+
+        Intent intent = new Intent(this, GeoFenceTransitionsIntentService.class);
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+    private GeofencingRequest geofencingRequest(Geofence geofence) {
+        Log.d("GeoRequest ", "Request");
+        return new GeofencingRequest.Builder()
+                .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+                .addGeofence(geofence)
+                .build();
+    }
 
     public void configurarLista(){
         listaMusic = getAllMusic();
@@ -108,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
             bindService(intentPlayer, this.conexao, Context.BIND_AUTO_CREATE);
             startService(intentPlayer);
         }
-
     }
 
     @Override
@@ -117,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         Intent intentService = new Intent("com.example.cti.musicfence.SERVICE_PLAYER_2");
         intentService.setPackage("com.example.cti.");
         stopService(intentService);
+        Intent intentGeofence = new Intent(".GeoFenceTransitionsIntentService");
+        intentGeofence.setPackage("com.example.cti.");
+        stopService(intentGeofence);
     }
 
     public void playMusic(View view) {
@@ -193,5 +255,28 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
     public static Intent makeNotificationIntent(Context applicationContext, String msg) {
         return makeNotificationIntent;
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+        if (status.isSuccess())
+            Log.e("Tag", "O sistema esta monitorando");
+        else
+            Log.e("Tag", "o SISTEMA NAO ESTA MONITORANDO");
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

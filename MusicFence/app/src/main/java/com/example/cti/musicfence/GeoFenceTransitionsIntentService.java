@@ -16,6 +16,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.location.Geofence;
@@ -30,8 +31,10 @@ import java.util.List;
 
 public class GeoFenceTransitionsIntentService extends IntentService{
 
-    public GeoFenceTransitionsIntentService(String name) {
-        super(name);
+    private static final String TAG = GeoFenceTransitionsIntentService.class.getSimpleName();
+
+    public GeoFenceTransitionsIntentService() {
+        super(TAG);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -64,16 +67,16 @@ public class GeoFenceTransitionsIntentService extends IntentService{
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void sendNotification(String msg){
-        Log.i("Notificao", "Send Notificacao" + msg);
-        Intent notificationIntent = MainActivity.makeNotificationIntent(getApplicationContext(),msg);
+        Log.i("Notificao", "Geofence " + msg);
+        //Intent notificationIntent = MainActivity.makeNotificationIntent(getApplicationContext(),msg);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(notificationIntent);
-        PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        //TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        //stackBuilder.addParentStack(MainActivity.class);
+        //stackBuilder.addNextIntent(notificationIntent);
+        /*PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0,criarNotificacao(msg,notificationPendingIntent));
+        notificationManager.notify(0,criarNotificacao(msg,notificationPendingIntent));*/
     }
 
     private Notification criarNotificacao(String msg, PendingIntent notifyPendingIntent){
