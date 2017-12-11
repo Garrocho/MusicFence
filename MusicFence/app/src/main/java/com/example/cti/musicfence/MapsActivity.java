@@ -75,7 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String nomeMusica;
     private Marker marker;
     private Button button;
-    private GeofencingClient geofencingClient = LocationServices.getGeofencingClient(this);
+    private GeofencingClient geofencingClient;
     private PendingIntent pendingIntent;
     private long duracaoGeofence = 60*60+1000;
 
