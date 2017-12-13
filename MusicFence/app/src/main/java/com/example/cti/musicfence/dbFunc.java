@@ -46,4 +46,9 @@ public class dbFunc {
         }
         return geoFences;
     }
+
+    public String retornaMusicFence(int id){
+        String[] idGeo = {""+String.valueOf(id)};
+        return String.valueOf(gateway.getDatabase().rawQuery("SELECT music FROM geoFence WHERE id=?",idGeo));
+    }
 }

@@ -13,6 +13,7 @@ public class dbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "musicFence.db";
     private static final int DATABASE_VERSION = 1;
     private static String CREATE_TABLE = "CREATE TABLE geoFence ("+
+            "id INT AUTOINCREMENT PRIMARY KEY,"+
             "latitude DOUBLE,"+
             "longitude DOUBLE,"+
             "raio DOUBLE,"+

@@ -311,9 +311,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private Geofence createGeofence(LatLng latLng, double radius) {
+        geoFence g = new geoFence();
         Log.d("Criar geofence", "Criada.");
         return new Geofence.Builder()
-                .setRequestId("0")
+                .setRequestId(g.getRequestId())
                 .setCircularRegion(latLng.latitude, latLng.longitude, (float) radius)
                 .setExpirationDuration(duracaoGeofence)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |

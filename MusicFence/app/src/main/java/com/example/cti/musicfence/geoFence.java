@@ -11,12 +11,14 @@ public class geoFence implements Geofence {
     public double longitude;
     public double raio;
     public String musica;
+    public int id;
 
-    public geoFence(double latitude, double longitude, double raio, String musica) {
+    public geoFence(int id,double latitude, double longitude, double raio, String musica) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.raio = raio;
         this.musica = musica;
+        this.id = id;
     }
 
     public geoFence() {
@@ -56,6 +58,6 @@ public class geoFence implements Geofence {
 
     @Override
     public String getRequestId() {
-        return "0";
+        return String.valueOf(id);
     }
 }
