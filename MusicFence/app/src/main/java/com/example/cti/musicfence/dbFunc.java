@@ -19,6 +19,7 @@ public class dbFunc {
         gateway = dbGateway.getInstance(context);
     }
 
+
     public boolean adicionar(double latitude, double longitude, double raio, String musica){
         ContentValues contentValues = new ContentValues();
         contentValues.put("latitude", latitude);
@@ -47,8 +48,12 @@ public class dbFunc {
         return geoFences;
     }
 
-    public String retornaMusicFence(int id){
-        String[] idGeo = {""+String.valueOf(id)};
-        return String.valueOf(gateway.getDatabase().rawQuery("SELECT music FROM geoFence WHERE id=?",idGeo));
+    public String retornaMusicFence(String id){
+        Cursor cursor = gateway.getDatabase().rawQuery("SELECT music FROM geoFence WHERE id="+String.valueOf(id), null);
+        Musica musica = new Musica();
+        while(cursor.moveToNext()){
+            musica.setTitulo(cursor.getString(cursor.getColumnIndex("music")));
+        }
+        return musica.getTitulo();
     }
 }

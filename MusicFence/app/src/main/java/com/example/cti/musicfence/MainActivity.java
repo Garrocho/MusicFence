@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     public static SeekBar seekBar;
     public static Intent makeNotificationIntent;
     private ServiceConnection conexao;
-    private mp3player.PlayerBinder binder;
+    private static mp3player.PlayerBinder binder;
     private ListView listaViewMusicas;
-    private ArrayList<Musica> listaMusic;
+    public static ArrayList<Musica> listaMusic;
     public static TextView musicaAtual;
-    private Context context;
+    private static Context context;
     private static final int MY_PERMISSIONS_READ_EXTERNAL_STORAGE = 1;
     private long duracaoGeofence = 60*60+1000;
     private GeofencingClient geofencingClient;
@@ -90,6 +90,18 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
                     Log.d("Status", "sucesso.");
                 }
             });
+        }
+    }
+
+    public static void entradaGeofence(List<Geofence> geofenceList){
+        Log.d("Id Geofence", String.valueOf(geofenceList));
+        dbFunc dbFunc = new dbFunc(context);
+        String nomeMusica = dbFunc.retornaMusicFence(geofenceList.get(0).getRequestId());
+//        Log.i("Musica Geo", nomeMusica);
+        for (Musica m : listaMusic) {
+            if (m.getTitulo().equalsIgnoreCase(nomeMusica)) {
+               binder.playMusic(m.getId());
+            }
         }
     }
 
