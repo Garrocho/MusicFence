@@ -199,10 +199,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d("Raio ", String.valueOf(raio[0]));
                         Log.d("Musica nome", nomeMusica);
                         if (func.adicionar(latLng.latitude, latLng.longitude, raio[0], nomeMusica) == true) {
+                            geoFence g = new geoFence();
                             Geofence geofence = createGeofence(latLng, raio[0]);
                             GeofencingRequest geofencingRequest = geofencingRequest(geofence);
                             addGeo(geofencingRequest);
-                            Log.i("Id da geo Criada",String.valueOf(geofence.getRequestId()));
                             Toast.makeText(MapsActivity.this, "Geofence adicionada com sucesso.", Toast.LENGTH_SHORT).show();
                         }
                     }

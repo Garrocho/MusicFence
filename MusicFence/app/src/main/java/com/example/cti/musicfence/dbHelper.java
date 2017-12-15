@@ -13,11 +13,10 @@ public class dbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "musicFence.db";
     private static final int DATABASE_VERSION = 1;
     private static String CREATE_TABLE = "CREATE TABLE geoFence ("+
-            "id INT AUTO_INCREMENT PRIMARY KEY,"+
             "latitude DOUBLE,"+
             "longitude DOUBLE,"+
             "raio DOUBLE,"+
-            "music VARCHAR)";
+            "music VARCHAR);";
 
     public dbHelper(Context context) {
         super(context,DATABASE_NAME,null,DATABASE_VERSION);

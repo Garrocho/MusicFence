@@ -93,14 +93,23 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         }
     }
 
-    public static void entradaGeofence(List<Geofence> geofenceList){
-        Log.d("Id Geofence", String.valueOf(geofenceList));
+    public static void entradaGeofence(LatLng latLng){
+        //Log.d("Id Geofence", String.valueOf(geofenceList));
         dbFunc dbFunc = new dbFunc(context);
-        String nomeMusica = dbFunc.retornaMusicFence(geofenceList.get(0).getRequestId());
-//        Log.i("Musica Geo", nomeMusica);
-        for (Musica m : listaMusic) {
-            if (m.getTitulo().equalsIgnoreCase(nomeMusica)) {
-               binder.playMusic(m.getId());
+        for (geoFence geo : dbFunc.listar()) {
+            Log.d(geo.getMusica(), geo.getLatitude() + " - " + geo.getLongitude());
+            if (calculaDistancia.distance(latLng.latitude,geo.getLatitude(),latLng.longitude,geo.longitude,0,0) < geo.getRaio()) {
+                String nomeMusica = geo.getMusica();
+                Log.i("Musica Geo", nomeMusica);
+                int index = 0;
+                for (Musica m : listaMusic) {
+
+                  if (m.getTitulo().equalsIgnoreCase(nomeMusica)) {
+                      Log.d("teste", m.getTitulo());
+                      binder.playMusic(index);
+                  }
+                  index++;
+                }
             }
         }
     }

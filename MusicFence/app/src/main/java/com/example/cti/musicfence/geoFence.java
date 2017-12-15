@@ -1,5 +1,7 @@
 package com.example.cti.musicfence;
 
+import android.util.Log;
+
 import com.google.android.gms.location.Geofence;
 
 /**
@@ -59,5 +61,10 @@ public class geoFence implements Geofence {
     @Override
     public String getRequestId() {
         return String.valueOf(id);
+    }
+
+    public void setId(int id) {
+        Log.d("id geofence",String.valueOf(this.id));
+        this.id = id;
     }
 }

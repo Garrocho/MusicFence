@@ -3,6 +3,9 @@ package com.example.cti.musicfence;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -48,8 +51,10 @@ public class dbFunc {
         return geoFences;
     }
 
-    public String retornaMusicFence(String id){
-        Cursor cursor = gateway.getDatabase().rawQuery("SELECT music FROM geoFence WHERE id="+String.valueOf(id), null);
+    public String retornaMusicFence(LatLng latLng){
+        Cursor cursor = gateway.getDatabase().rawQuery("SELECT * FROM geoFence WHERE latitude="+
+                latLng.latitude + " and longitude=" +latLng.longitude,
+                null);
         Musica musica = new Musica();
         while(cursor.moveToNext()){
             musica.setTitulo(cursor.getString(cursor.getColumnIndex("music")));

@@ -9,6 +9,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,31 +43,15 @@ public class GeoFenceTransitionsIntentService extends IntentService{
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+        Location location = geofencingEvent.getTriggeringLocation();
+        LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
         int geoFenceTransition = geofencingEvent.getGeofenceTransition();
 
-        if (geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-                geoFenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-            List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
-            String geoFenceTransitionDetalhes = getTransitionDetalhes(geoFenceTransition,triggeringGeofences);
-            sendNotification(geoFenceTransitionDetalhes);
+        if (geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+            MainActivity.entradaGeofence(latLng);
         }
     }
 
-    private String getTransitionDetalhes(int geoFenceTransition,List<Geofence> triggeringGeofences){
-        ArrayList<String> triggeringGeofencesList =  new ArrayList<>();
-        for ( Geofence geofence : triggeringGeofences ) {
-            triggeringGeofencesList.add( geofence.getRequestId() );
-        }
-
-        String status =  null;
-        if ( geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ) {
-            status = "Entrando ";
-            MainActivity.entradaGeofence(triggeringGeofences);
-        }
-        else if ( geoFenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT )
-            status =  "Saindo ";
-        return status + TextUtils.join(  ", ", triggeringGeofencesList);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void sendNotification(String msg){
