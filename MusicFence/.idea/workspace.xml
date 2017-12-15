@@ -42,11 +42,12 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
-              <caret line="175" column="37" lean-forward="true" selection-start-line="175" selection-start-column="37" selection-end-line="175" selection-end-column="37" />
+            <state relative-caret-position="552">
+              <caret line="98" column="46" lean-forward="false" selection-start-line="98" selection-start-column="46" selection-end-line="98" selection-end-column="46" />
               <folding>
+                <element signature="e#8473#8474#0" expanded="true" />
+                <element signature="e#8507#8508#0" expanded="true" />
                 <element signature="method#onOptionsItemSelected#0;class#MainActivity#0" expanded="false" />
-                <element signature="method#onServiceConnected#0;class#MainActivity#0" expanded="false" />
                 <element signature="method#getAllMusic#0;class#MainActivity#0" expanded="false" />
                 <element signature="method#onResult#0;class#MainActivity#0" expanded="false" />
               </folding>
@@ -57,10 +58,9 @@
       <file leaf-file-name="mp3player.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/mp3player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="113" column="20" lean-forward="false" selection-start-line="113" selection-start-column="20" selection-end-line="113" selection-end-column="20" />
+            <state relative-caret-position="644">
+              <caret line="189" column="0" lean-forward="false" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
               <folding>
-                <element signature="method#play#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
                 <element signature="method#pause#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
                 <element signature="method#stop#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
                 <element signature="method#next#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
@@ -68,7 +68,6 @@
                 <element signature="method#onCreate#0;class#mp3player#0" expanded="false" />
                 <element signature="method#onStartCommand#0;class#mp3player#0" expanded="false" />
                 <element signature="method#onCompletion#0;class#mp3player#0" expanded="false" />
-                <element signature="method#play#0;class#mp3player#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -2027,7 +2026,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513361345314" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513362726927" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2075,7 +2074,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513361345314" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513362726927" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2258,7 +2257,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513361345315" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513362726928" />
       </method>
     </configuration>
     <list size="1">
@@ -2614,14 +2613,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/GeoFenceTransitionsIntentService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/calculaDistancia.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
@@ -2643,10 +2634,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/mp3player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="113" column="20" lean-forward="false" selection-start-line="113" selection-start-column="20" selection-end-line="113" selection-end-column="20" />
+        <state relative-caret-position="644">
+          <caret line="189" column="0" lean-forward="false" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
           <folding>
-            <element signature="method#play#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
             <element signature="method#pause#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
             <element signature="method#stop#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
             <element signature="method#next#0;class#PlayerBinder#0;class#mp3player#0" expanded="false" />
@@ -2654,18 +2644,26 @@
             <element signature="method#onCreate#0;class#mp3player#0" expanded="false" />
             <element signature="method#onStartCommand#0;class#mp3player#0" expanded="false" />
             <element signature="method#onCompletion#0;class#mp3player#0" expanded="false" />
-            <element signature="method#play#0;class#mp3player#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/GeoFenceTransitionsIntentService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="303">
+          <caret line="53" column="0" lean-forward="false" selection-start-line="53" selection-start-column="0" selection-end-line="53" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/cti/musicfence/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="175" column="37" lean-forward="true" selection-start-line="175" selection-start-column="37" selection-end-line="175" selection-end-column="37" />
+        <state relative-caret-position="552">
+          <caret line="98" column="46" lean-forward="false" selection-start-line="98" selection-start-column="46" selection-end-line="98" selection-end-column="46" />
           <folding>
+            <element signature="e#8473#8474#0" expanded="true" />
+            <element signature="e#8507#8508#0" expanded="true" />
             <element signature="method#onOptionsItemSelected#0;class#MainActivity#0" expanded="false" />
-            <element signature="method#onServiceConnected#0;class#MainActivity#0" expanded="false" />
             <element signature="method#getAllMusic#0;class#MainActivity#0" expanded="false" />
             <element signature="method#onResult#0;class#MainActivity#0" expanded="false" />
           </folding>

@@ -106,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
 
                   if (m.getTitulo().equalsIgnoreCase(nomeMusica)) {
                       Log.d("teste", m.getTitulo());
+                      if(binder.isBinderAlive())
                       binder.playMusic(index);
+                      binder.play();
                   }
                   index++;
                 }
