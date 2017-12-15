@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
     }
 
     public static void entradaGeofence(LatLng latLng){
-        //Log.d("Id Geofence", String.valueOf(geofenceList));
+        Log.d("Id Geofence", "entrou em uma geofence");
         dbFunc dbFunc = new dbFunc(context);
         for (geoFence geo : dbFunc.listar()) {
             Log.d(geo.getMusica(), geo.getLatitude() + " - " + geo.getLongitude());

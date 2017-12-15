@@ -8,6 +8,7 @@ import android.app.Service;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
@@ -46,6 +47,8 @@ public class GeoFenceTransitionsIntentService extends IntentService{
         Location location = geofencingEvent.getTriggeringLocation();
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
         int geoFenceTransition = geofencingEvent.getGeofenceTransition();
+
+        Log.i("teste", "teste");
 
         if (geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             MainActivity.entradaGeofence(latLng);
