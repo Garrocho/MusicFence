@@ -48,7 +48,6 @@ public class GeoFenceTransitionsIntentService extends IntentService{
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
         int geoFenceTransition = geofencingEvent.getGeofenceTransition();
 
-        Log.i("teste", "teste");
 
         if (geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
             MainActivity.entradaGeofence(latLng);

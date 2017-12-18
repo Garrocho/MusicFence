@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/7315b50860560aee28279a6b785d92eb/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="a7a0aa678c3bbadb67fb41df9e107f7ee9087902">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/bd442f2bc6a44e1126445577a8323983/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="c2deeac83ffa1304264bc755c2ddb84e7a7fa239">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/17.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/Library/Android/sdk/extras/m2repository/com/android/support/constraint/constraint-layout-solver/1.0.2/constraint-layout-solver-1.0.2.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/24.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/90fcec74213dc7c2c4e5f6155f75ed5a/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b77e50b3c31d0fc64148530f7077f79ec114b5b9">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/4931c243991ec481dc9cfaa05f359c90/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="d29e451fd5bcc265989bf80afd4f149d95d72e7d">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/16.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/play-services-location-11.6.0.aar/2f899a698951767e3e915a367ad5d9a8/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="42c5ee016c8815db37d662f18c497aee13150f9e">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/d5e2bb02969912cb3ef8c9918ee0ed5b/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/15.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.6.0.aar/e8d019f65d5a5ec370a8ddf178b4c066/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="869a1d15fa9d8e8aa36587b042f553c1baea46bc">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/14.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/c17558132340575a71dcf6d0d6f37608/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.5.2/7446d06ec8d4f7ffcc53f1da37c95f200dcb9387/picasso-2.5.2.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/e6b5120d690ff2f84d42f6ec5fce31f6/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="cad1364721fc716a39bdc351d3637edb634c9aa5">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/library-1.2.2.aar/eef67bd642b872d02ac37c87174fa63e/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="8646b1e69dd5d923d8866dc4311859f0fbca456c">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/play-services-base-11.6.0.aar/cb8608ce827955728943462eec2afe58/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="863b37c463df79f340b5d83bbbfc63ad25612e01">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/12.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/84485ceec4b33fdbfbcd4e5cafc3a82d/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="a64026daf4819a589aea776f5deb19b257a104d1">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/20.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.6.0.aar/207c144ef830340a2517ce5755e90d05/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="48ab283a4cda3b78eda2c149b588cb0aa0c66cc9">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/54b169ee5bd5b43acdf8a4916034f27a/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="05e3d15c623cd98f0eb43c8249fb6151fae0786c">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/18.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.6.0.aar/96b25d4e12f892ef43576d2e7009f59c/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="729a6a1975c19d7461378172c7932f5c57f1c3fe">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/13.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/31bae58cfd14abb69ba1642f26b5e424/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="40a6b8f05124eb9e6012e18b80a6dbd13440e283">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/11.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/24e629a7963df18561168cff79607aad/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="e04f28ac2dd9bbe48ced6fc87fedf46c2586f5d6">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/19.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/25.4.0/f6a2fc748ae3769633dea050563e1613e93c135e/support-annotations-25.4.0.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="f6a2fc748ae3769633dea050563e1613e93c135e">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/21.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/85261df4009e6718af331921add429d6/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="4961be1437163ab598620a3c907c0f3432936f51">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/laboratorio/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/f0baf0537464b3b90bc7db7c9397c70d/jars/classes.jar"
+        jumboMode="false"
+        min-sdk-version="15"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b1e0cd070d7cf659ece90e919bff76e7ddc32532">
+        <dex dex="/Users/laboratorio/Documents/GitHub/MusicFence/MusicFence/app/build/intermediates/transforms/preDex/release/10.jar" />
+    </item>
+
+</items>

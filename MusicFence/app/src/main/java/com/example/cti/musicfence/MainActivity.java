@@ -98,15 +98,13 @@ public class MainActivity extends AppCompatActivity implements ServiceConnection
         dbFunc dbFunc = new dbFunc(context);
         for (geoFence geo : dbFunc.listar()) {
             Log.d(geo.getMusica(), geo.getLatitude() + " - " + geo.getLongitude());
-            if (calculaDistancia.distance(latLng.latitude,geo.getLatitude(),latLng.longitude,geo.longitude,0,0) < geo.getRaio()) {
+            if (calculaDistancia.distance(latLng.latitude,geo.getLatitude(),latLng.longitude,geo.longitude,1,1) < geo.getRaio()) {
                 String nomeMusica = geo.getMusica();
                 Log.i("Musica Geo", nomeMusica);
                 int index = 0;
                 for (Musica m : listaMusic) {
-
-                  if (m.getTitulo().equalsIgnoreCase(nomeMusica)) {
-                      Log.d("teste", m.getTitulo());
-                      if(binder.isBinderAlive())
+                  if (m.getTitulo().contains(nomeMusica)) {
+                      Log.d("teste", "Play music");
                       binder.playMusic(index);
                       binder.play();
                   }
