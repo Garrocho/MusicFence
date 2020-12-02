@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: me.drakeet.materialdialog:library:1.2.2@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/af7662d6763a4e9b001fff741c49b6cb/library-1.2.2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/af7662d6763a4e9b001fff741c49b6cb/library-1.2.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/af7662d6763a4e9b001fff741c49b6cb/library-1.2.2/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.drakeet.materialdialog/library/1.2.2/1f856c895261642c7bc63184e4dd1343ced2e96a/library-1.2.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.drakeet.materialdialog/library/1.2.2/f04bc95ed3fead0ae197f1f63b0f85f3e86afe65/library-1.2.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.android.gms:play-services-location:17.1.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-location-17.1.0.aar/a7de271143a9bc5c925a4be35b227e33/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/53a12c82235eff80ae1eb2ac90b704df/play-services-location-17.1.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0d494dc423c778add5f989aa177c05b9/play-services-location-17.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0d494dc423c778add5f989aa177c05b9/play-services-location-17.1.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0d494dc423c778add5f989aa177c05b9/play-services-location-17.1.0/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-location/17.1.0/6fde1462ab8c9d41ca3ef5c90e7b98ccd4163b6d/play-services-location-17.1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
